@@ -241,12 +241,26 @@
     setStatus("Lade …");
     const ref = cfg.branch ? `?ref=${encodeURIComponent(cfg.branch)}` : "";
     try {
-      const r = await fetch(api(`/contents/${FILE}${ref}`) + (ref ? "&" : "?") + "t=" + Date.now(), { headers: headers(), cache: "no-store" });
-      if (r.status === 404) {
+      const url = api(`/contents/${FILE}${ref}`) + (ref ? "&" : "?") + "t=" + Date.now();
+      let r = await fetch(url, { headers: headers(), cache: "no-store" });
+      let badToken = false;
+      if (r.status === 401 && cfg.token) {
+        // Token ungültig → ohne Token lesen (öffentliches Repo), aber deutlich melden
+        badToken = true;
+        r = await fetch(url, { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" });
+      }
+      if (badToken && r.ok) {
+        const j = await r.json(); sha = j.sha;
+        const parsed = JSON.parse(b64decode(j.content));
+        data = { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
+        setStatus("⚠️ Token ungültig – nur lesen. Bitte neuen Token in den Einstellungen eintragen.");
+        $("settings").open = true;
+        show("GitHub lehnt den Token ab (401). Lesen klappt, Speichern nicht. Öffne unten „Einstellungen“ und füge den Token neu ein.", "err");
+      } else if (r.status === 404) {
         data = { entries: [] }; sha = null;
         setStatus(cfg.token ? "Verbunden – noch keine Daten." : "Keine Daten gefunden. Token in den Einstellungen eintragen.");
       } else if (!r.ok) {
-        throw new Error(`GitHub antwortet mit ${r.status}`);
+        throw new Error(r.status === 401 ? "Token ungültig (401)" : `GitHub antwortet mit ${r.status}`);
       } else {
         const j = await r.json();
         sha = j.sha;
@@ -273,7 +287,9 @@
     };
     const r = await fetch(api(`/contents/${FILE}`), { method: "PUT", headers: { ...headers(), "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (r.status === 409 || r.status === 422) { const e = new Error("conflict"); e.conflict = true; throw e; }
-    if (!r.ok) throw new Error(`Speichern fehlgeschlagen (${r.status})${r.status === 401 || r.status === 403 ? " – Token prüfen" : ""}`);
+    if (r.status === 401) throw new Error("Nicht gespeichert: GitHub lehnt den Token ab (401). Bitte unter „Einstellungen“ einen neuen Token eintragen.");
+    if (r.status === 403 || r.status === 404) throw new Error(`Nicht gespeichert (${r.status}): Der Token darf nicht in dieses Repo schreiben. Beim Token „RepoNR1“ auswählen und „Contents: Read and write“ geben.`);
+    if (!r.ok) throw new Error(`Speichern fehlgeschlagen (${r.status}).`);
     sha = (await r.json()).content.sha;
     store.set("lk_cache", JSON.stringify(data));
     setStatus(`Synchronisiert (${data.entries.length} Einträge).`);
@@ -392,7 +408,7 @@
   });
 
   $("saveSettings").addEventListener("click", async () => {
-    cfg.token = $("token").value.trim(); cfg.owner = $("owner").value.trim();
+    cfg.token = $("token").value.replace(/\s+/g, "").replace(/^(bearer|token)/i, ""); cfg.owner = $("owner").value.trim();
     cfg.repo = $("repo").value.trim(); cfg.branch = $("branch").value.trim();
     store.set("lk_token", cfg.token); store.set("lk_owner", cfg.owner);
     store.set("lk_repo", cfg.repo); store.set("lk_branch", cfg.branch);
