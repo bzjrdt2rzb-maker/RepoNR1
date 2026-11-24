@@ -6,62 +6,112 @@
 <title>Länder-Kilometer</title>
 <style>
   :root {
-    --bg: #f6f7f9; --card: #ffffff; --text: #1b1f24; --muted: #5f6b7a;
-    --border: #dde2e8; --accent: #2563eb; --ok: #15803d; --err: #b91c1c;
-    --code: #eef1f5;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #111418; --card: #1a1f25; --text: #e6e9ed; --muted: #9aa5b1;
-      --border: #2c333c; --accent: #60a5fa; --ok: #4ade80; --err: #f87171;
-      --code: #232a32;
-    }
+    color-scheme: dark;
+    --bg: #050b18; --bg2: #0b1730; --card: rgba(13, 27, 52, .72); --text: #e8f1fb; --muted: #8fa6c2;
+    --border: rgba(120, 170, 230, .18); --accent: #3fd0c9; --accent2: #f5b84b; --ok: #5ee39a; --err: #ff7a7a;
+    --code: rgba(63, 208, 201, .12); --ocean: #0d2a52; --land: #2fa58f; --land-hi: #f5b84b;
   }
   * { box-sizing: border-box; }
+  html { background: var(--bg); }
   body {
-    margin: 0; background: var(--bg); color: var(--text);
+    margin: 0; color: var(--text); min-height: 100vh;
     font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #12305e 0%, transparent 60%),
+      radial-gradient(800px 500px at 100% 100%, #0b2a3a 0%, transparent 60%),
+      var(--bg);
+    background-attachment: fixed;
   }
-  main { max-width: 680px; margin: 0 auto; padding: 20px 16px 48px; }
-  h1 { font-size: 1.4rem; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 16px; font-size: .92rem; }
+  /* Sterne */
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .55;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 30% 80%, #cfe 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 70% 30%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 85% 65%, #def 50%, transparent 51%),
+      radial-gradient(1px 1px at 50% 50%, #fff 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 20% 55%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 92% 12%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 60% 90%, #cdf 50%, transparent 51%);
+    background-size: 380px 380px;
+  }
+  /* Weltkarte im Hintergrund */
+  #bgmap { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: .13; }
+  main { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 12px 16px 48px; }
+
+  header.hero { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 10px; }
+  #globeWrap { position: relative; width: min(260px, 62vw); aspect-ratio: 1; margin: 6px 0 4px; }
+  #globeWrap::after { /* Atmosphäre */
+    content: ""; position: absolute; inset: -8%; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, transparent 58%, rgba(63, 208, 201, .22) 66%, transparent 74%);
+  }
+  #globe { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+  #globe:active { cursor: grabbing; }
+  h1 {
+    font-size: 1.7rem; margin: 4px 0 2px; letter-spacing: .02em;
+    background: linear-gradient(90deg, var(--accent), #8fd3ff 50%, var(--accent2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub { color: var(--muted); margin: 0 0 8px; font-size: .92rem; }
+  #status { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; background: rgba(255,255,255,.03); }
+  #status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
   .card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 14px; margin-bottom: 14px;
+    border-radius: 16px; padding: 14px; margin-bottom: 14px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
   }
   form { display: flex; gap: 8px; }
-  input[type=text], input[type=password], input[type=number] {
+  input[type=text], input[type=password] {
     flex: 1; min-width: 0; font: inherit; color: var(--text);
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 12px;
+    background: rgba(4, 12, 28, .7); border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 12px;
   }
+  #cmd { font-size: 1.05rem; padding-left: 38px;
+    background: rgba(4, 12, 28, .7) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233fd0c9' stroke-width='1.6'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18'/%3E%3C/svg%3E") no-repeat 11px center / 18px; }
   input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
   button {
-    font: inherit; border: 0; border-radius: 8px; padding: 10px 14px;
-    background: var(--accent); color: #fff; cursor: pointer;
+    font: inherit; font-weight: 600; border: 0; border-radius: 10px; padding: 10px 16px;
+    background: linear-gradient(135deg, var(--accent), #2a9fd6); color: #04121f; cursor: pointer;
   }
-  button.secondary { background: var(--code); color: var(--text); border: 1px solid var(--border); }
+  button.secondary { background: rgba(255,255,255,.05); color: var(--text); border: 1px solid var(--border); font-weight: 500; }
   #out { margin-top: 12px; min-height: 1.5em; white-space: pre-wrap; word-break: break-word; }
   .ok { color: var(--ok); } .err { color: var(--err); } .muted { color: var(--muted); }
-  .big { font-size: 1.25rem; font-weight: 600; }
-  details summary { cursor: pointer; font-weight: 600; }
+  .big { display: inline-block; font-size: 1.25rem; font-weight: 700; margin: 2px 0;
+    padding: 4px 12px 4px 10px; border-radius: 999px; background: rgba(245, 184, 75, .12); color: var(--accent2);
+    border: 1px solid rgba(245, 184, 75, .35); }
+  .big::before { content: "📍 "; }
+  details summary { cursor: pointer; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 8px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after { content: "▸"; margin-left: auto; color: var(--accent); transition: transform .2s; }
+  details[open] summary::after { transform: rotate(90deg); }
   details[open] summary { margin-bottom: 10px; }
+  .ico { font-size: 1.1rem; }
   table { width: 100%; border-collapse: collapse; font-size: .95rem; }
-  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th, td { text-align: left; padding: 7px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
   th { color: var(--muted); font-weight: 500; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .9em; white-space: nowrap; }
+  code { background: var(--code); color: #9ff0ea; padding: 1px 6px; border-radius: 5px; font-size: .9em; white-space: nowrap; }
   label { display: block; font-size: .88rem; color: var(--muted); margin: 10px 0 4px; }
   .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-  #status { font-size: .85rem; color: var(--muted); }
   .hist { font-size: .9rem; color: var(--muted); margin-top: 8px; }
   .hist div { padding: 2px 0; }
+  .kmbar { display: block; height: 4px; border-radius: 2px; margin-top: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: .8; }
 </style>
 </head>
 <body>
+<svg id="bgmap" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
 <main>
-  <h1>Länder-Kilometer</h1>
-  <p class="sub">Distanz vom Startland → Zielland. <span id="status">Lade …</span></p>
+  <header class="hero">
+    <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
+    <h1>Länder-Kilometer</h1>
+    <p class="sub">Distanz vom Startland → Zielland</p>
+    <span id="status">Lade …</span>
+  </header>
 
   <div class="card">
     <form id="cmdForm" autocomplete="off">
@@ -75,7 +125,7 @@
 
   <div class="card">
     <details>
-      <summary>Alle Befehle</summary>
+      <summary><span class="ico">🧭</span> Alle Befehle</summary>
       <table>
         <tr><th>Befehl</th><th>Was passiert</th></tr>
         <tr><td><code>+1234 Frankreich</code><br><code>+1234,Frankreich</code></td>
@@ -101,14 +151,14 @@
 
   <div class="card">
     <details id="listDetails">
-      <summary>Alle Einträge (<span id="count">0</span>)</summary>
+      <summary><span class="ico">🗺️</span><span>Alle Einträge (<span id="count">0</span>)</span></summary>
       <div id="list"></div>
     </details>
   </div>
 
   <div class="card">
     <details id="settings">
-      <summary>Einstellungen (GitHub-Zugang)</summary>
+      <summary><span class="ico">⚙️</span> Einstellungen (GitHub-Zugang)</summary>
       <p class="muted" style="font-size:.9rem;margin:0">
         Damit alle Geräte dieselben Daten haben, liegen sie als <code>data.json</code> in deinem GitHub-Repo.
         Zum <b>Speichern</b> braucht jedes Gerät einmalig ein GitHub-Token (Fine-grained, nur dieses Repo,
@@ -165,9 +215,10 @@
   function renderList() {
     const rows = [...data.entries].sort((a, b) => a.km - b.km || a.name.localeCompare(b.name, "de"));
     $("count").textContent = rows.length;
+    const maxKm = Math.max(1, ...rows.map((e) => e.km));
     $("list").innerHTML = rows.length
       ? "<table><tr><th class='num'>ID</th><th class='num'>km</th><th>Land</th></tr>" +
-        rows.map((e) => `<tr><td class="num muted">${e.id}</td><td class="num">${e.km}</td><td>${esc(e.name)}</td></tr>`).join("") +
+        rows.map((e) => `<tr><td class="num muted">${e.id}</td><td class="num">${e.km}</td><td>${esc(e.name)}<span class="kmbar" style="width:${Math.max(4, Math.round(100 * e.km / maxKm))}%"></span></td></tr>`).join("") +
         "</table>"
       : "<p class='muted'>Noch keine Einträge.</p>";
   }
@@ -256,6 +307,7 @@
         const e = { id, km, name };
         data.entries.push(e); return { upd: false, e };
       }, `+${km} ${name}`);
+      window.globeFocus?.([res.e.name]);
       return res.upd
         ? show(`Aktualisiert: <b>${esc(res.e.name)}</b> ${res.old} → ${km} km`, "ok")
         : show(`Gespeichert: <b>${esc(res.e.name)}</b> = ${km} km (ID ${res.e.id})`, "ok");
@@ -265,7 +317,7 @@
     if ((m = input.match(/^-\s*(\d+)$/))) {
       const km = parseInt(m[1], 10);
       const hits = data.entries.filter((e) => e.km === km);
-      if (hits.length) return show(fmt(hits));
+      if (hits.length) { window.globeFocus?.(hits.map((e) => e.name)); return show(fmt(hits)); }
       const near = data.entries.filter((e) => Math.abs(e.km - km) <= 20).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
       return show(`Kein Land mit ${km} km.` + (near.length ? `<br><span class="muted">In der Nähe: ${near.map((e) => `${esc(e.name)} (${e.km})`).join(", ")}</span>` : ""), "err");
     }
@@ -274,6 +326,7 @@
     if ((m = input.match(/^~\s*(\d+)(?:\s+(\d+))?$/))) {
       const km = parseInt(m[1], 10), tol = m[2] ? parseInt(m[2], 10) : 20;
       const hits = data.entries.filter((e) => Math.abs(e.km - km) <= tol).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
+      window.globeFocus?.(hits.map((e) => e.name));
       return hits.length
         ? show(hits.map((e) => `<b>${esc(e.name)}</b> – ${e.km} km <span class="muted">(${e.km - km >= 0 ? "+" : ""}${e.km - km})</span>`).join("<br>"))
         : show(`Nichts im Bereich ${km} ± ${tol} km.`, "err");
@@ -283,6 +336,7 @@
     if ((m = input.match(/^\?\s*(.+)$/))) {
       const q = norm(m[1]);
       const hits = data.entries.filter((e) => norm(e.name).includes(q)).sort((a, b) => a.name.localeCompare(b.name, "de"));
+      window.globeFocus?.(hits.map((e) => e.name));
       return hits.length
         ? show(hits.map((e) => `<b>${esc(e.name)}</b> – ${e.km} km`).join("<br>"))
         : show(`Kein Land mit „${esc(m[1].trim())}“ gefunden.`, "err");
@@ -354,6 +408,121 @@
 
   if (!cfg.token) $("settings").open = true;
   load();
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script>
+// Globus + Weltkarte (rein dekorativ; ohne Internet läuft die Datenbank trotzdem)
+(async () => {
+  if (!window.d3 || !window.topojson) return;
+  let world;
+  try {
+    world = await (await fetch("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json")).json();
+  } catch { return; }
+  const countries = topojson.feature(world, world.objects.countries).features;
+  const borders = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
+  const land = topojson.feature(world, world.objects.land);
+  const css = getComputedStyle(document.documentElement);
+  const C = (n) => css.getPropertyValue(n).trim();
+
+  // Hintergrund-Weltkarte
+  const bg = d3.select("#bgmap");
+  const proj2 = d3.geoNaturalEarth1().fitSize([960, 500], { type: "Sphere" });
+  const path2 = d3.geoPath(proj2);
+  bg.append("path").attr("d", path2(d3.geoGraticule10())).attr("fill", "none").attr("stroke", "#5aa9ff").attr("stroke-width", .5);
+  bg.append("path").attr("d", path2(land)).attr("fill", "#3fd0c9");
+
+  // Deutsche Ländernamen → Kartennamen (über Intl.DisplayNames)
+  const norm = (s) => s.toLocaleLowerCase("de").replace(/ß/g, "ss").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, "");
+  const byName = new Map(countries.map((f) => [norm(f.properties.name), f]));
+  const alias = { unitedstates: "unitedstatesofamerica", usa: "unitedstatesofamerica", kongodemrep: "demrepcongo",
+    kongokinshasa: "demrepcongo", demokratischerepublikkongo: "demrepcongo", kongobrazzaville: "congo", kongo: "congo",
+    bosnienundherzegowina: "bosniaandherz", zentralafrikanischerepublik: "centralafricanrep", sudsudan: "ssudan",
+    dominikanischerepublik: "dominicanrep", aquatorialguinea: "eqguinea", elfenbeinkuste: "cotedivoire",
+    salomonen: "solomonis", falklandinseln: "falklandis", westsahara: "wsahara", nordzypern: "ncyprus",
+    eswatini: "eswatini", swasiland: "eswatini", tschechien: "czechia", nordmazedonien: "macedonia", turkei: "turkey",
+    myanmar: "myanmar", birma: "myanmar", osttimor: "timorleste", grossbritannien: "unitedkingdom", england: "unitedkingdom",
+    russland: "russia", vereinigtestaaten: "unitedstatesofamerica", amerika: "unitedstatesofamerica" };
+  try {
+    const de = new Intl.DisplayNames(["de"], { type: "region" }), en = new Intl.DisplayNames(["en"], { type: "region" });
+    const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (const a of A) for (const b of A) {
+      const code = a + b; let d, e;
+      try { d = de.of(code); e = en.of(code); } catch { continue; }
+      if (!d || d === code) continue;
+      const k = norm(d), ke = norm(e);
+      if (!alias[k] && byName.has(ke)) alias[k] = ke;
+    }
+  } catch {}
+  const findCountry = (name) => { const k = norm(name); return byName.get(k) || byName.get(alias[k] || "") || null; };
+
+  // Globus
+  const canvas = document.getElementById("globe");
+  const ctx = canvas.getContext("2d");
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  let size = 0;
+  const proj = d3.geoOrthographic().clipAngle(90).precision(.4);
+  const path = d3.geoPath(proj, ctx);
+  const grat = d3.geoGraticule10();
+  function resize() {
+    size = canvas.clientWidth; canvas.width = size * dpr; canvas.height = size * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    proj.translate([size / 2, size / 2]).scale(size / 2 - 2);
+  }
+  resize(); addEventListener("resize", resize);
+
+  let highlight = new Set();
+  function draw() {
+    ctx.clearRect(0, 0, size, size);
+    const r = size / 2 - 2;
+    const g = ctx.createRadialGradient(size * .38, size * .35, r * .1, size / 2, size / 2, r);
+    g.addColorStop(0, "#1d5394"); g.addColorStop(1, "#071a36");
+    ctx.beginPath(); path({ type: "Sphere" }); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); path(grat); ctx.strokeStyle = "rgba(143,211,255,.18)"; ctx.lineWidth = .6; ctx.stroke();
+    ctx.beginPath(); path(land); ctx.fillStyle = C("--land") || "#2fa58f"; ctx.fill();
+    if (highlight.size) {
+      ctx.beginPath(); for (const f of highlight) path(f);
+      ctx.fillStyle = C("--land-hi") || "#f5b84b"; ctx.fill();
+    }
+    ctx.beginPath(); path(borders); ctx.strokeStyle = "rgba(5,11,24,.55)"; ctx.lineWidth = .5; ctx.stroke();
+    ctx.beginPath(); path({ type: "Sphere" }); ctx.strokeStyle = "rgba(143,211,255,.5)"; ctx.lineWidth = 1; ctx.stroke();
+  }
+
+  let rot = [-10, -25, 0], spinning = true, target = null, last = performance.now();
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function tick(now) {
+    const dt = Math.min(64, now - last); last = now;
+    if (target) {
+      const i = d3.interpolate(rot, target), k = Math.min(1, dt / 220);
+      rot = i(k);
+      if (Math.abs(rot[0] - target[0]) < .2 && Math.abs(rot[1] - target[1]) < .2) { rot = target; target = null; }
+    } else if (spinning && !reduce) rot = [rot[0] + dt * .006, rot[1], 0];
+    proj.rotate(rot); draw();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // Ziehen zum Drehen
+  let drag = null, resumeT;
+  canvas.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, r: rot.slice() }; spinning = false; target = null; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!drag) return; const k = 90 / (size / 2);
+    rot = [drag.r[0] + (e.clientX - drag.x) * k, Math.max(-80, Math.min(80, drag.r[1] - (e.clientY - drag.y) * k)), 0];
+  });
+  canvas.addEventListener("pointerup", () => { drag = null; clearTimeout(resumeT); resumeT = setTimeout(() => (spinning = true), 4000); });
+
+  // Von der Datenbank aufgerufen: zu Ländern drehen und markieren
+  window.globeFocus = (names) => {
+    const found = (names || []).map(findCountry).filter(Boolean);
+    highlight = new Set(found);
+    if (!found.length) return 0;
+    const [lon, lat] = d3.geoCentroid(found[0]);
+    let lon0 = -lon; while (lon0 - rot[0] > 180) lon0 -= 360; while (lon0 - rot[0] < -180) lon0 += 360;
+    target = [lon0, -lat, 0]; spinning = false;
+    clearTimeout(resumeT); resumeT = setTimeout(() => (spinning = true), 8000);
+    return found.length;
+  };
 })();
 </script>
 </body>
