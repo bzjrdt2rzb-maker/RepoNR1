@@ -101,7 +101,41 @@
   .hist div { padding: 2px 0; }
   .kmbar { display: block; height: 4px; border-radius: 2px; margin-top: 4px;
     background: linear-gradient(90deg, var(--accent), var(--accent2)); opacity: .8; }
+
+  /* Eingabe-Pad */
+  .modes { display: flex; gap: 6px; margin-bottom: 10px; }
+  .mode { flex: 1; background: rgba(255,255,255,.04); color: var(--muted); border: 1px solid var(--border); font-weight: 600; padding: 9px 6px; }
+  .mode.on { background: linear-gradient(135deg, var(--accent), #2a9fd6); color: #04121f; border-color: transparent; }
+  .mode[data-mode=minus].on { background: linear-gradient(135deg, var(--accent2), #f08a4b); }
+  .display { display: flex; align-items: baseline; gap: 10px; min-height: 58px; padding: 10px 14px; border-radius: 12px;
+    background: rgba(4, 12, 28, .75); border: 1px solid var(--border); font-size: 1.6rem; font-weight: 700; overflow: hidden; }
+  .display .sign { color: var(--accent); width: 1ch; }
+  .display.minus .sign { color: var(--accent2); }
+  .display .km { font-variant-numeric: tabular-nums; }
+  .display .km.done { color: var(--muted); font-size: 1.2rem; }
+  .display .km.done::after { content: " km"; font-size: .9rem; }
+  .display .nm { color: var(--accent2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .display .ph { color: var(--muted); font-weight: 400; font-size: 1rem; }
+  .display .caret { width: 2px; height: 1.3em; background: var(--accent); align-self: center; margin-left: -8px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; min-height: 0; }
+  .chip { font-weight: 600; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--text); border: 1px solid var(--border); }
+  .chip.top { background: rgba(63, 208, 201, .18); border-color: var(--accent); }
+  .chip small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .keys { margin-top: 10px; user-select: none; -webkit-user-select: none; }
+  .keys button { font-size: 1.25rem; font-weight: 600; padding: 0; height: 54px; border-radius: 10px;
+    background: rgba(255,255,255,.07); color: var(--text); border: 1px solid var(--border); touch-action: manipulation; }
+  .keys button:active { background: rgba(63, 208, 201, .3); }
+  .keys button.act { background: linear-gradient(135deg, var(--accent), #2a9fd6); color: #04121f; border: 0; font-size: 1rem; }
+  .keys button.fn { color: var(--muted); font-size: 1rem; }
+  .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .kbd .row { display: flex; gap: 5px; justify-content: center; margin-bottom: 6px; }
+  .kbd .row button { flex: 0 0 calc((100% - 45px) / 10); font-size: 1.05rem; height: 50px; }
+  .kbd .row button.wide { flex: 1 1 auto; }
+  .kbd .row button.space { flex: 3 1 auto; }
+  [hidden] { display: none !important; }
 </style>
+
 </head>
 <body>
 <svg id="bgmap" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
@@ -109,23 +143,40 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v3</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v4</span></p>
     <span id="status">Lade …</span>
   </header>
 
   <div class="card">
-    <form id="cmdForm" autocomplete="off">
-      <input type="text" id="cmd" placeholder="+1234 Frankreich   oder   -1234" autofocus
+    <div class="modes">
+      <button type="button" class="mode" data-mode="plus">＋ Speichern</button>
+      <button type="button" class="mode" data-mode="minus">− Suchen</button>
+      <button type="button" class="mode" data-mode="text">⌨ Befehl</button>
+    </div>
+    <div id="padTop"><div class="display" id="display"></div></div>
+    <form id="cmdForm" autocomplete="off" hidden>
+      <input type="text" id="cmd" placeholder="z. B. liste, ?fra, ~1234, umbenennen A > B"
              autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
       <button type="submit">OK</button>
     </form>
     <div id="out"></div>
+    <div id="padArea">
+      <div class="suggest" id="suggest"></div>
+      <div class="keys numpad" id="numpad"></div>
+      <div class="keys kbd" id="kbd" hidden></div>
+    </div>
     <div class="hist" id="hist"></div>
   </div>
 
   <div class="card">
     <details>
       <summary><span class="ico">🧭</span> Alle Befehle</summary>
+      <p style="margin:0 0 10px;font-size:.92rem">
+        <b>＋ Speichern:</b> Kilometer auf dem Zahlenfeld tippen → <b>Weiter</b> (oder Leertaste/Enter) → Land auf der Tastatur tippen → Vorschlag antippen oder <b>↵</b> (nimmt den markierten Vorschlag).<br>
+        <b>− Suchen:</b> Kilometer tippen – Treffer erscheinen sofort. <b>↵</b> leert das Feld für die nächste Zahl.<br>
+        <b>⌨ Befehl:</b> Freie Eingabe für alle Befehle unten.<br>
+        Der gewählte Modus bleibt, bis du ihn änderst.
+      </p>
       <table>
         <tr><th>Befehl</th><th>Was passiert</th></tr>
         <tr><td><code>+1234 Frankreich</code><br><code>+1234,Frankreich</code></td>
@@ -138,6 +189,8 @@
             <td>Sucht Länder, deren Name den Text enthält, und zeigt deren Kilometer.</td></tr>
         <tr><td><code>liste</code> oder <code>#</code></td>
             <td>Zeigt alle Einträge, nach Kilometern sortiert.</td></tr>
+        <tr><td><code>umbenennen Luxembourh &gt; Luxembourg</code></td>
+            <td>Korrigiert den Namen eines Landes (km bleiben gleich).</td></tr>
         <tr><td><code>löschen Frankreich</code></td>
             <td>Entfernt ein Land (fragt vorher nach).</td></tr>
         <tr><td><code>neu</code></td>
@@ -368,6 +421,18 @@
       return show(`${data.entries.length} Einträge – siehe Liste unten.`, "muted");
     }
 
+    if ((m = input.match(/^(?:umbenennen|rename)\s+(.+?)\s*(?:>|->|=>)\s*(.+)$/i))) {
+      const from = m[1].trim(), to = m[2].trim();
+      const ex = data.entries.find((e) => norm(e.name) === norm(from));
+      if (!ex) return show(`„${esc(from)}“ gibt es nicht.`, "err");
+      const clash = data.entries.find((e) => e !== ex && norm(e.name) === norm(to));
+      if (clash) return show(`„${esc(clash.name)}“ gibt es schon (${clash.km} km). Lösche erst einen der beiden.`, "err");
+      const old = ex.name;
+      await mutate(() => { const e = data.entries.find((x) => norm(x.name) === norm(from)); if (e) e.name = to; }, `umbenennen ${old} > ${to}`);
+      window.globeFocus?.([to]);
+      return show(`Umbenannt: ${esc(old)} → <b>${esc(to)}</b>`, "ok");
+    }
+
     if ((m = input.match(/^(?:löschen|loeschen|del)\s+(.+)$/i))) {
       const name = m[1].trim();
       const ex = data.entries.find((e) => norm(e.name) === norm(name));
@@ -396,22 +461,173 @@
   });
 
   let busy = false;
-  $("cmdForm").addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    if (busy) return;
-    const el = $("cmd"), val = el.value;
+  async function exec(val) {
+    if (busy || !val.trim()) return false;
     if (applySettings()) await load();
-    if (!val.trim()) return;
     history.push(val); hIdx = history.length;
     busy = true; show("…", "muted");
-    try { await run(val); el.value = ""; }
-    catch (e) { show(esc(e.message), "err"); }
+    let ok = true;
+    try { await run(val); if (out.className === "err") ok = false; }
+    catch (e) { show(esc(e.message), "err"); ok = false; }
     finally {
       busy = false;
       histBox.innerHTML = history.slice(-5).reverse().map((h) => `<div>› ${esc(h)}</div>`).join("");
-      el.focus();
     }
+    return ok;
+  }
+  $("cmdForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const el = $("cmd");
+    if (await exec(el.value)) el.value = "";
+    el.focus();
   });
+
+  // ================= Eingabe-Pad =================
+  const COUNTRIES = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Central African Republic","Chad","Chile","China","Colombia","Comoros","Costa Rica","Croatia","Cuba","Cyprus","Czechia","Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Falkland Islands","Fiji","Finland","France","French Guiana","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Greenland","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Ivory Coast","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Republic of the Congo","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Western Sahara","Yemen","Zambia","Zimbabwe"];
+  const ALIASES = { "usa": "United States", "us": "United States", "america": "United States", "uk": "United Kingdom", "great britain": "United Kingdom", "britain": "United Kingdom", "england": "United Kingdom", "uae": "United Arab Emirates", "drc": "Democratic Republic of the Congo", "dr congo": "Democratic Republic of the Congo", "congo": "Republic of the Congo", "czech republic": "Czechia", "east timor": "Timor-Leste", "swaziland": "Eswatini", "burma": "Myanmar", "cote d ivoire": "Ivory Coast", "holland": "Netherlands", "vatican": "Vatican City", "st lucia": "Saint Lucia", "st vincent": "Saint Vincent and the Grenadines", "st kitts": "Saint Kitts and Nevis", "car": "Central African Republic", "png": "Papua New Guinea", "macedonia": "North Macedonia" };
+  const sk = (x) => x.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+
+  function suggestions(q) {
+    const k = sk(q); if (!k) return [];
+    const pool = new Map();
+    for (const c of COUNTRIES) pool.set(sk(c), c);
+    for (const e of data.entries) if (!pool.has(sk(e.name))) pool.set(sk(e.name), e.name);
+    const scored = [];
+    for (const [key, name] of pool) {
+      let sc = -1;
+      if (key === k) sc = 0;
+      else if (key.startsWith(k)) sc = 1;
+      else if (key.split(" ").some((w) => w.startsWith(k))) sc = 2;
+      else if (key.includes(k)) sc = 3;
+      if (sc >= 0) scored.push([sc, name]);
+    }
+    for (const [a, name] of Object.entries(ALIASES)) if (a.startsWith(k) && !scored.some((x) => x[1] === name)) scored.push([a === k ? 0 : 1.5, name]);
+    scored.sort((a, b) => a[0] - b[0] || a[1].length - b[1].length || a[1].localeCompare(b[1]));
+    return scored.slice(0, 8).map((x) => x[1]);
+  }
+  const titleCase = (t) => t.trim().replace(/\s+/g, " ").replace(/(^|[\s-])([a-z])/g, (m0, a, b) => a + b.toUpperCase());
+
+  const pad = { mode: ["plus", "minus", "text"].includes(store.get("lk_mode")) ? store.get("lk_mode") : "plus", stage: "num", km: "", name: "" };
+
+  function renderPad() {
+    document.querySelectorAll(".mode").forEach((b) => b.classList.toggle("on", b.dataset.mode === pad.mode));
+    const text = pad.mode === "text";
+    $("padArea").hidden = text; $("padTop").hidden = text; $("cmdForm").hidden = !text;
+    if (text) return;
+    const d = $("display");
+    d.className = "display " + pad.mode;
+    const sign = pad.mode === "plus" ? "+" : "−";
+    if (pad.stage === "num") {
+      d.innerHTML = `<span class="sign">${sign}</span>` + (pad.km ? `<span class="km">${pad.km}</span>` : `<span class="ph">Kilometer eingeben</span>`) + `<span class="caret"></span>`;
+    } else {
+      d.innerHTML = `<span class="sign">${sign}</span><span class="km done">${pad.km}</span>` + (pad.name ? `<span class="nm">${esc(pad.name)}</span>` : `<span class="ph">Land eingeben</span>`) + `<span class="caret"></span>`;
+    }
+    $("numpad").hidden = pad.stage !== "num";
+    $("kbd").hidden = pad.stage !== "name";
+    const act = $("numpad").querySelector(".act");
+    if (act) act.textContent = pad.mode === "plus" ? "Weiter →" : "↵ Neu";
+    // Vorschläge
+    const sg = $("suggest");
+    if (pad.stage === "name") {
+      const list = suggestions(pad.name);
+      sg.innerHTML = list.map((n, i) => {
+        const ex = data.entries.find((e) => norm(e.name) === norm(n));
+        return `<button type="button" class="chip${i === 0 ? " top" : ""}" data-name="${esc(n)}">${esc(n)}${ex ? `<small>${ex.km} km</small>` : ""}</button>`;
+      }).join("");
+    } else sg.innerHTML = "";
+  }
+
+  function liveNum() {
+    if (!pad.km) { show(""); return; }
+    const km = parseInt(pad.km, 10);
+    const hits = data.entries.filter((e) => e.km === km);
+    if (pad.mode === "minus") {
+      if (hits.length) { window.globeFocus?.(hits.map((e) => e.name)); show(fmt(hits)); }
+      else show(`<span class="muted">Kein Land mit ${km} km.</span>`);
+    } else {
+      show(hits.length ? `<span class="muted">Schon bei ${km} km: ${hits.map((e) => esc(e.name)).join(", ")}</span>` : "");
+    }
+  }
+
+  async function savePlus(name) {
+    name = (name || "").trim();
+    if (!name) return;
+    const ok = await exec(`+${pad.km} ${name}`);
+    if (ok) { pad.stage = "num"; pad.km = ""; pad.name = ""; }
+    renderPad();
+  }
+  function enterName() {
+    if (pad.stage !== "name") return;
+    const list = suggestions(pad.name);
+    savePlus(list[0] || titleCase(pad.name));
+  }
+
+  function key(k) {
+    if (busy) return;
+    if (pad.stage === "num") {
+      if (/^\d$/.test(k)) { if (pad.km.length < 6) pad.km = (pad.km === "0" ? "" : pad.km) + k; liveNum(); }
+      else if (k === "back") { pad.km = pad.km.slice(0, -1); liveNum(); }
+      else if (k === "next") {
+        if (!pad.km) return;
+        if (pad.mode === "plus") { pad.stage = "name"; pad.name = ""; }
+        else { history.push(`-${pad.km}`); hIdx = history.length; histBox.innerHTML = history.slice(-5).reverse().map((h) => `<div>› ${esc(h)}</div>`).join(""); pad.km = ""; }
+      }
+    } else {
+      if (k === "back") { if (pad.name) pad.name = pad.name.slice(0, -1); else pad.stage = "num"; }
+      else if (k === "tonum") { pad.stage = "num"; }
+      else if (k === "enter") return enterName();
+      else if (k === " ") { if (pad.name && !pad.name.endsWith(" ")) pad.name += " "; }
+      else if (k.length === 1) {
+        const atWordStart = !pad.name || /[\s-]$/.test(pad.name);
+        pad.name += atWordStart ? k.toUpperCase() : k.toLowerCase();
+      }
+    }
+    renderPad();
+  }
+
+  // Tasten aufbauen
+  $("numpad").innerHTML = ["1","2","3","4","5","6","7","8","9"].map((n) => `<button type="button" data-k="${n}">${n}</button>`).join("") +
+    `<button type="button" class="fn" data-k="back">⌫</button><button type="button" data-k="0">0</button><button type="button" class="act" data-k="next">Weiter →</button>`;
+  const rows = ["qwertzuiop", "asdfghjkl", "yxcvbnm"];
+  $("kbd").innerHTML =
+    rows.map((r, i) => `<div class="row">${[...r].map((c) => `<button type="button" data-k="${c}">${c.toUpperCase()}</button>`).join("")}${i === 2 ? `<button type="button" class="fn wide" data-k="back">⌫</button>` : ""}</div>`).join("") +
+    `<div class="row"><button type="button" class="fn wide" data-k="tonum">← km</button><button type="button" data-k="-">-</button><button type="button" class="space" data-k=" ">Leertaste</button><button type="button" data-k=".">.</button><button type="button" class="act wide" data-k="enter">↵ Speichern</button></div>`;
+
+  const fire = (ev) => {
+    const b = ev.target.closest("button"); if (!b) return;
+    ev.preventDefault();
+    if (b.dataset.k) key(b.dataset.k);
+    else if (b.dataset.name) savePlus(b.dataset.name);
+  };
+  $("numpad").addEventListener("click", fire);
+  $("kbd").addEventListener("click", fire);
+  $("suggest").addEventListener("click", fire);
+  document.querySelectorAll(".mode").forEach((b) => b.addEventListener("click", () => {
+    pad.mode = b.dataset.mode; store.set("lk_mode", pad.mode);
+    pad.stage = "num"; pad.km = ""; pad.name = ""; show("");
+    renderPad();
+    if (pad.mode === "text") $("cmd").focus();
+  }));
+
+  // Hardware-Tastatur (z. B. Tablet-Tastatur oder PC)
+  document.addEventListener("keydown", (ev) => {
+    if (pad.mode === "text" || ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    if (ev.target.closest && ev.target.closest("input, textarea, select")) return;
+    let k = null;
+    if (pad.stage === "num") {
+      if (/^\d$/.test(ev.key)) k = ev.key;
+      else if (ev.key === "Backspace") k = "back";
+      else if (ev.key === "Enter" || ev.key === " ") k = "next";
+    } else {
+      if (ev.key === "Enter") k = "enter";
+      else if (ev.key === "Backspace") k = "back";
+      else if (ev.key === "Escape") k = "tonum";
+      else if (/^[a-zA-Z .'-]$/.test(ev.key)) k = ev.key;
+    }
+    if (k !== null) { ev.preventDefault(); key(k); }
+  });
+
+  renderPad();
 
   // Einstellungen übernehmen (auch automatisch, ohne „Speichern & laden“ zu drücken)
   function applySettings() {
@@ -476,7 +692,11 @@
   // Deutsche Ländernamen → Kartennamen (über Intl.DisplayNames)
   const norm = (s) => s.toLocaleLowerCase("de").replace(/ß/g, "ss").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, "");
   const byName = new Map(countries.map((f) => [norm(f.properties.name), f]));
-  const alias = { unitedstates: "unitedstatesofamerica", usa: "unitedstatesofamerica", kongodemrep: "demrepcongo",
+  const alias = { bosniaandherzegovina: "bosniaandherz", democraticrepublicofthecongo: "demrepcongo", republicofthecongo: "congo",
+    centralafricanrepublic: "centralafricanrep", southsudan: "ssudan", dominicanrepublic: "dominicanrep", equatorialguinea: "eqguinea",
+    ivorycoast: "cotedivoire", solomonislands: "solomonis", northmacedonia: "macedonia", westernsahara: "wsahara",
+    falklandislands: "falklandis", czechrepublic: "czechia", easttimor: "timorleste", northerncyprus: "ncyprus",
+    unitedstates: "unitedstatesofamerica", usa: "unitedstatesofamerica", kongodemrep: "demrepcongo",
     kongokinshasa: "demrepcongo", demokratischerepublikkongo: "demrepcongo", kongobrazzaville: "congo", kongo: "congo",
     bosnienundherzegowina: "bosniaandherz", zentralafrikanischerepublik: "centralafricanrep", sudsudan: "ssudan",
     dominikanischerepublik: "dominicanrep", aquatorialguinea: "eqguinea", elfenbeinkuste: "cotedivoire",
