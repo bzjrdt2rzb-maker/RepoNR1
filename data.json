@@ -4,6 +4,11 @@
       "id": 1,
       "km": 0,
       "name": "China"
+    },
+    {
+      "id": 2,
+      "km": 5770,
+      "name": "Niger"
     }
   ]
 }
