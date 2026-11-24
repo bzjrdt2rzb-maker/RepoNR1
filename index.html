@@ -109,7 +109,7 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland</p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v3</span></p>
     <span id="status">Lade …</span>
   </header>
 
@@ -166,6 +166,7 @@
       </p>
       <label for="token">GitHub-Token</label>
       <input type="password" id="token" placeholder="github_pat_…">
+      <div id="tokenInfo" style="font-size:.85rem;margin-top:4px"></div>
       <label for="owner">Besitzer</label>
       <input type="text" id="owner">
       <label for="repo">Repository</label>
@@ -267,6 +268,10 @@
         const parsed = JSON.parse(b64decode(j.content));
         data = { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
         setStatus(cfg.token ? `Synchronisiert (${data.entries.length} Einträge).` : "Nur lesen – zum Speichern Token eintragen.");
+      }
+      if (badToken) {
+        setStatus("⚠️ Token ungültig – nur lesen. Bitte neuen Token in den Einstellungen eintragen.");
+        $("settings").open = true;
       }
       store.set("lk_cache", JSON.stringify(data));
     } catch (e) {
@@ -395,6 +400,7 @@
     ev.preventDefault();
     if (busy) return;
     const el = $("cmd"), val = el.value;
+    if (applySettings()) await load();
     if (!val.trim()) return;
     history.push(val); hIdx = history.length;
     busy = true; show("…", "muted");
@@ -407,13 +413,31 @@
     }
   });
 
-  $("saveSettings").addEventListener("click", async () => {
-    cfg.token = $("token").value.replace(/\s+/g, "").replace(/^(bearer|token)/i, ""); cfg.owner = $("owner").value.trim();
-    cfg.repo = $("repo").value.trim(); cfg.branch = $("branch").value.trim();
+  // Einstellungen übernehmen (auch automatisch, ohne „Speichern & laden“ zu drücken)
+  function applySettings() {
+    const t = $("token").value.replace(/\s+/g, "").replace(/^(bearer|token)/i, "");
+    const next = { token: t, owner: $("owner").value.trim(), repo: $("repo").value.trim(), branch: $("branch").value.trim() };
+    const changed = ["token", "owner", "repo", "branch"].some((k) => next[k] !== cfg[k]);
+    Object.assign(cfg, next);
     store.set("lk_token", cfg.token); store.set("lk_owner", cfg.owner);
     store.set("lk_repo", cfg.repo); store.set("lk_branch", cfg.branch);
-    await load();
-  });
+    showTokenInfo();
+    return changed;
+  }
+  function showTokenInfo() {
+    const t = cfg.token;
+    let msg, cls = "muted";
+    if (!t) { msg = "Kein Token gespeichert."; cls = "err"; }
+    else if (t.startsWith("github_pat_")) {
+      msg = `Gespeichert: ${t.slice(0, 15)}… (${t.length} Zeichen)`;
+      if (t.length < 80) { msg += " – zu kurz! Ein vollständiger Token hat ca. 93 Zeichen. Bitte mit dem Kopieren-Symbol kopieren."; cls = "err"; }
+    } else if (t.startsWith("ghp_")) msg = `Gespeichert: Classic-Token ${t.slice(0, 8)}… (${t.length} Zeichen)`;
+    else { msg = `Das sieht nicht wie ein GitHub-Token aus (sollte mit „github_pat_“ beginnen).`; cls = "err"; }
+    $("tokenInfo").className = cls; $("tokenInfo").textContent = msg;
+  }
+  for (const id of ["token", "owner", "repo", "branch"]) $(id).addEventListener("change", async () => { if (applySettings()) await load(); });
+  $("saveSettings").addEventListener("click", async () => { applySettings(); await load(); });
+  showTokenInfo();
 
   $("exportBtn").addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
