@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Länder-Kilometer</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1b1f24; --muted: #5f6b7a;
+    --border: #dde2e8; --accent: #2563eb; --ok: #15803d; --err: #b91c1c;
+    --code: #eef1f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111418; --card: #1a1f25; --text: #e6e9ed; --muted: #9aa5b1;
+      --border: #2c333c; --accent: #60a5fa; --ok: #4ade80; --err: #f87171;
+      --code: #232a32;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 680px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: .92rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 14px;
+  }
+  form { display: flex; gap: 8px; }
+  input[type=text], input[type=password], input[type=number] {
+    flex: 1; min-width: 0; font: inherit; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 12px;
+  }
+  input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  button {
+    font: inherit; border: 0; border-radius: 8px; padding: 10px 14px;
+    background: var(--accent); color: #fff; cursor: pointer;
+  }
+  button.secondary { background: var(--code); color: var(--text); border: 1px solid var(--border); }
+  #out { margin-top: 12px; min-height: 1.5em; white-space: pre-wrap; word-break: break-word; }
+  .ok { color: var(--ok); } .err { color: var(--err); } .muted { color: var(--muted); }
+  .big { font-size: 1.25rem; font-weight: 600; }
+  details summary { cursor: pointer; font-weight: 600; }
+  details[open] summary { margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: .9em; white-space: nowrap; }
+  label { display: block; font-size: .88rem; color: var(--muted); margin: 10px 0 4px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  #status { font-size: .85rem; color: var(--muted); }
+  .hist { font-size: .9rem; color: var(--muted); margin-top: 8px; }
+  .hist div { padding: 2px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Länder-Kilometer</h1>
+  <p class="sub">Distanz vom Startland → Zielland. <span id="status">Lade …</span></p>
+
+  <div class="card">
+    <form id="cmdForm" autocomplete="off">
+      <input type="text" id="cmd" placeholder="+1234 Frankreich   oder   -1234" autofocus
+             autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go">
+      <button type="submit">OK</button>
+    </form>
+    <div id="out"></div>
+    <div class="hist" id="hist"></div>
+  </div>
+
+  <div class="card">
+    <details>
+      <summary>Alle Befehle</summary>
+      <table>
+        <tr><th>Befehl</th><th>Was passiert</th></tr>
+        <tr><td><code>+1234 Frankreich</code><br><code>+1234,Frankreich</code></td>
+            <td>Speichert das Land mit 1234 km. Gibt es das Land schon, wird nur die Kilometerzahl aktualisiert (Groß-/Kleinschreibung egal).</td></tr>
+        <tr><td><code>-1234</code></td>
+            <td>Zeigt alle Länder mit genau 1234 km.</td></tr>
+        <tr><td><code>~1234</code><br><code>~1234 50</code></td>
+            <td>Zeigt alle Länder im Bereich 1234 ± 20 km (oder ± der zweiten Zahl, hier 50), nach Abstand sortiert.</td></tr>
+        <tr><td><code>?Frankreich</code><br><code>?fra</code></td>
+            <td>Sucht Länder, deren Name den Text enthält, und zeigt deren Kilometer.</td></tr>
+        <tr><td><code>liste</code> oder <code>#</code></td>
+            <td>Zeigt alle Einträge, nach Kilometern sortiert.</td></tr>
+        <tr><td><code>löschen Frankreich</code></td>
+            <td>Entfernt ein Land (fragt vorher nach).</td></tr>
+        <tr><td><code>neu</code></td>
+            <td>Lädt die Daten neu von GitHub (z.&nbsp;B. nach Einträgen von einem anderen Gerät).</td></tr>
+        <tr><td><code>hilfe</code></td>
+            <td>Klappt diese Liste auf.</td></tr>
+      </table>
+      <p class="muted" style="font-size:.88rem;margin:10px 0 0">Tipp: Mit ↑ / ↓ im Eingabefeld holst du frühere Befehle zurück.</p>
+    </details>
+  </div>
+
+  <div class="card">
+    <details id="listDetails">
+      <summary>Alle Einträge (<span id="count">0</span>)</summary>
+      <div id="list"></div>
+    </details>
+  </div>
+
+  <div class="card">
+    <details id="settings">
+      <summary>Einstellungen (GitHub-Zugang)</summary>
+      <p class="muted" style="font-size:.9rem;margin:0">
+        Damit alle Geräte dieselben Daten haben, liegen sie als <code>data.json</code> in deinem GitHub-Repo.
+        Zum <b>Speichern</b> braucht jedes Gerät einmalig ein GitHub-Token (Fine-grained, nur dieses Repo,
+        Berechtigung „Contents: Read and write“). Das Token bleibt nur in diesem Browser gespeichert.
+      </p>
+      <label for="token">GitHub-Token</label>
+      <input type="password" id="token" placeholder="github_pat_…">
+      <label for="owner">Besitzer</label>
+      <input type="text" id="owner">
+      <label for="repo">Repository</label>
+      <input type="text" id="repo">
+      <label for="branch">Branch (leer = Standard-Branch)</label>
+      <input type="text" id="branch">
+      <div class="row">
+        <button type="button" id="saveSettings">Speichern &amp; laden</button>
+        <button type="button" class="secondary" id="exportBtn">Export (JSON)</button>
+      </div>
+    </details>
+  </div>
+</main>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const store = {
+    get(k, d = "") { try { return localStorage.getItem(k) ?? d; } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  };
+
+  // --- Einstellungen: Besitzer/Repo aus der GitHub-Pages-Adresse ableiten ---
+  const host = location.hostname;
+  const guessOwner = host.endsWith(".github.io") ? host.split(".")[0] : "bzjrdt2rzb-maker";
+  const guessRepo = (host.endsWith(".github.io") && location.pathname.split("/")[1]) || "RepoNR1";
+  const cfg = {
+    token: store.get("lk_token"),
+    owner: store.get("lk_owner", guessOwner),
+    repo: store.get("lk_repo", guessRepo),
+    branch: store.get("lk_branch"),
+  };
+  $("token").value = cfg.token; $("owner").value = cfg.owner;
+  $("repo").value = cfg.repo; $("branch").value = cfg.branch;
+
+  const FILE = "data.json";
+  let data = { entries: [] };   // { entries: [{id, km, name}] }
+  let sha = null;
+
+  // --- Ausgabe ---
+  const out = $("out");
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const show = (html, cls = "") => { out.className = cls; out.innerHTML = html; };
+  const setStatus = (t) => { $("status").textContent = t; };
+  const norm = (s) => s.trim().toLocaleLowerCase("de");
+
+  function renderList() {
+    const rows = [...data.entries].sort((a, b) => a.km - b.km || a.name.localeCompare(b.name, "de"));
+    $("count").textContent = rows.length;
+    $("list").innerHTML = rows.length
+      ? "<table><tr><th class='num'>ID</th><th class='num'>km</th><th>Land</th></tr>" +
+        rows.map((e) => `<tr><td class="num muted">${e.id}</td><td class="num">${e.km}</td><td>${esc(e.name)}</td></tr>`).join("") +
+        "</table>"
+      : "<p class='muted'>Noch keine Einträge.</p>";
+  }
+
+  // --- GitHub-API ---
+  const api = (path) => `https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}${path}`;
+  const headers = () => {
+    const h = { Accept: "application/vnd.github+json" };
+    if (cfg.token) h.Authorization = `Bearer ${cfg.token}`;
+    return h;
+  };
+  const b64decode = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g, "")), (c) => c.charCodeAt(0)));
+  const b64encode = (str) => {
+    const bytes = new TextEncoder().encode(str);
+    let bin = ""; bytes.forEach((b) => (bin += String.fromCharCode(b)));
+    return btoa(bin);
+  };
+
+  async function load() {
+    setStatus("Lade …");
+    const ref = cfg.branch ? `?ref=${encodeURIComponent(cfg.branch)}` : "";
+    try {
+      const r = await fetch(api(`/contents/${FILE}${ref}`) + (ref ? "&" : "?") + "t=" + Date.now(), { headers: headers(), cache: "no-store" });
+      if (r.status === 404) {
+        data = { entries: [] }; sha = null;
+        setStatus(cfg.token ? "Verbunden – noch keine Daten." : "Keine Daten gefunden. Token in den Einstellungen eintragen.");
+      } else if (!r.ok) {
+        throw new Error(`GitHub antwortet mit ${r.status}`);
+      } else {
+        const j = await r.json();
+        sha = j.sha;
+        const parsed = JSON.parse(b64decode(j.content));
+        data = { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
+        setStatus(cfg.token ? `Synchronisiert (${data.entries.length} Einträge).` : "Nur lesen – zum Speichern Token eintragen.");
+      }
+      store.set("lk_cache", JSON.stringify(data));
+    } catch (e) {
+      const cached = store.get("lk_cache");
+      if (cached) { try { data = JSON.parse(cached); } catch {} }
+      setStatus(`Offline/Fehler: ${e.message}. Zeige zwischengespeicherte Daten.`);
+    }
+    renderList();
+  }
+
+  async function save(message) {
+    if (!cfg.token) throw new Error("Kein Token – bitte in den Einstellungen eintragen.");
+    const body = {
+      message,
+      content: b64encode(JSON.stringify(data, null, 2) + "\n"),
+      ...(sha ? { sha } : {}),
+      ...(cfg.branch ? { branch: cfg.branch } : {}),
+    };
+    const r = await fetch(api(`/contents/${FILE}`), { method: "PUT", headers: { ...headers(), "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (r.status === 409 || r.status === 422) { const e = new Error("conflict"); e.conflict = true; throw e; }
+    if (!r.ok) throw new Error(`Speichern fehlgeschlagen (${r.status})${r.status === 401 || r.status === 403 ? " – Token prüfen" : ""}`);
+    sha = (await r.json()).content.sha;
+    store.set("lk_cache", JSON.stringify(data));
+    setStatus(`Synchronisiert (${data.entries.length} Einträge).`);
+  }
+
+  // Änderung anwenden; bei Konflikt (anderes Gerät hat gespeichert) neu laden und erneut versuchen.
+  async function mutate(fn, message) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const result = fn();
+      try { await save(message); renderList(); return result; }
+      catch (e) { if (e.conflict) { await load(); continue; } await load(); throw e; }
+    }
+    throw new Error("Konnte nicht speichern (zu viele Konflikte). Bitte nochmal versuchen.");
+  }
+
+  // --- Befehle ---
+  const fmt = (list) => list.map((e) => `<span class="big">${esc(e.name)}</span>`).join("<br>");
+
+  async function run(raw) {
+    const input = raw.replace(/[‎‏‪-‮⁦-⁩]/g, "").trim();
+    if (!input) return;
+    let m;
+
+    // +1234 Land  /  +1234,Land
+    if ((m = input.match(/^\+\s*(\d+)\s*[,;:\s]\s*(.+)$/))) {
+      const km = parseInt(m[1], 10), name = m[2].trim();
+      const res = await mutate(() => {
+        const ex = data.entries.find((e) => norm(e.name) === norm(name));
+        if (ex) { const old = ex.km; ex.km = km; return { upd: true, old, e: ex }; }
+        const id = data.entries.reduce((mx, e) => Math.max(mx, e.id), 0) + 1;
+        const e = { id, km, name };
+        data.entries.push(e); return { upd: false, e };
+      }, `+${km} ${name}`);
+      return res.upd
+        ? show(`Aktualisiert: <b>${esc(res.e.name)}</b> ${res.old} → ${km} km`, "ok")
+        : show(`Gespeichert: <b>${esc(res.e.name)}</b> = ${km} km (ID ${res.e.id})`, "ok");
+    }
+
+    // -1234
+    if ((m = input.match(/^-\s*(\d+)$/))) {
+      const km = parseInt(m[1], 10);
+      const hits = data.entries.filter((e) => e.km === km);
+      if (hits.length) return show(fmt(hits));
+      const near = data.entries.filter((e) => Math.abs(e.km - km) <= 20).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
+      return show(`Kein Land mit ${km} km.` + (near.length ? `<br><span class="muted">In der Nähe: ${near.map((e) => `${esc(e.name)} (${e.km})`).join(", ")}</span>` : ""), "err");
+    }
+
+    // ~1234 [toleranz]
+    if ((m = input.match(/^~\s*(\d+)(?:\s+(\d+))?$/))) {
+      const km = parseInt(m[1], 10), tol = m[2] ? parseInt(m[2], 10) : 20;
+      const hits = data.entries.filter((e) => Math.abs(e.km - km) <= tol).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
+      return hits.length
+        ? show(hits.map((e) => `<b>${esc(e.name)}</b> – ${e.km} km <span class="muted">(${e.km - km >= 0 ? "+" : ""}${e.km - km})</span>`).join("<br>"))
+        : show(`Nichts im Bereich ${km} ± ${tol} km.`, "err");
+    }
+
+    // ?Land
+    if ((m = input.match(/^\?\s*(.+)$/))) {
+      const q = norm(m[1]);
+      const hits = data.entries.filter((e) => norm(e.name).includes(q)).sort((a, b) => a.name.localeCompare(b.name, "de"));
+      return hits.length
+        ? show(hits.map((e) => `<b>${esc(e.name)}</b> – ${e.km} km`).join("<br>"))
+        : show(`Kein Land mit „${esc(m[1].trim())}“ gefunden.`, "err");
+    }
+
+    if (/^(liste|list|#)$/i.test(input)) {
+      $("listDetails").open = true; renderList();
+      return show(`${data.entries.length} Einträge – siehe Liste unten.`, "muted");
+    }
+
+    if ((m = input.match(/^(?:löschen|loeschen|del)\s+(.+)$/i))) {
+      const name = m[1].trim();
+      const ex = data.entries.find((e) => norm(e.name) === norm(name));
+      if (!ex) return show(`„${esc(name)}“ gibt es nicht.`, "err");
+      if (!confirm(`„${ex.name}“ (${ex.km} km) wirklich löschen?`)) return show("Abgebrochen.", "muted");
+      await mutate(() => { data.entries = data.entries.filter((e) => norm(e.name) !== norm(name)); }, `löschen ${ex.name}`);
+      return show(`Gelöscht: ${esc(ex.name)}`, "ok");
+    }
+
+    if (/^(neu|reload|sync)$/i.test(input)) { await load(); return show("Neu geladen.", "muted"); }
+
+    if (/^(hilfe|help|\?)$/i.test(input)) {
+      document.querySelector("details").open = true;
+      return show("Befehle siehe „Alle Befehle“.", "muted");
+    }
+
+    show("Unbekannter Befehl. Tippe <code>hilfe</code>.", "err");
+  }
+
+  // --- Verlauf (↑/↓) ---
+  const history = []; let hIdx = 0;
+  const histBox = $("hist");
+  $("cmd").addEventListener("keydown", (ev) => {
+    if (ev.key === "ArrowUp" && hIdx > 0) { hIdx--; ev.target.value = history[hIdx]; ev.preventDefault(); }
+    if (ev.key === "ArrowDown") { hIdx = Math.min(history.length, hIdx + 1); ev.target.value = history[hIdx] ?? ""; ev.preventDefault(); }
+  });
+
+  let busy = false;
+  $("cmdForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    if (busy) return;
+    const el = $("cmd"), val = el.value;
+    if (!val.trim()) return;
+    history.push(val); hIdx = history.length;
+    busy = true; show("…", "muted");
+    try { await run(val); el.value = ""; }
+    catch (e) { show(esc(e.message), "err"); }
+    finally {
+      busy = false;
+      histBox.innerHTML = history.slice(-5).reverse().map((h) => `<div>› ${esc(h)}</div>`).join("");
+      el.focus();
+    }
+  });
+
+  $("saveSettings").addEventListener("click", async () => {
+    cfg.token = $("token").value.trim(); cfg.owner = $("owner").value.trim();
+    cfg.repo = $("repo").value.trim(); cfg.branch = $("branch").value.trim();
+    store.set("lk_token", cfg.token); store.set("lk_owner", cfg.owner);
+    store.set("lk_repo", cfg.repo); store.set("lk_branch", cfg.branch);
+    await load();
+  });
+
+  $("exportBtn").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "laender-km.json"; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  if (!cfg.token) $("settings").open = true;
+  load();
+})();
+</script>
+</body>
+</html>
