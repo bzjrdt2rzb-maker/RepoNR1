@@ -64,6 +64,11 @@
       "id": 13,
       "km": 4300,
       "name": "Kosovo"
+    },
+    {
+      "id": 14,
+      "km": 6790,
+      "name": "Vanuatu"
     }
   ]
 }
