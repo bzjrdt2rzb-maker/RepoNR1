@@ -63,1154 +63,927 @@
     {
       "id": 15,
       "km": 0,
-      "name": "Afghanistan",
-      "est": true
+      "name": "Afghanistan"
     },
     {
       "id": 16,
-      "km": 4410,
-      "name": "Albania",
-      "est": true
+      "km": 4415,
+      "name": "Albania"
     },
     {
       "id": 17,
       "km": 5570,
-      "name": "Algeria",
-      "est": true
+      "name": "Algeria"
     },
     {
       "id": 18,
-      "km": 5855,
-      "name": "Andorra",
-      "est": true
+      "km": 5865,
+      "name": "Andorra"
     },
     {
       "id": 19,
-      "km": 7370,
-      "name": "Angola",
-      "est": true
+      "km": 7375,
+      "name": "Angola"
     },
     {
       "id": 20,
-      "km": 11985,
-      "name": "Antigua and Barbuda",
-      "est": true
+      "km": 12040,
+      "name": "Antigua and Barbuda"
     },
     {
       "id": 21,
       "km": 14955,
-      "name": "Argentina",
-      "est": true
+      "name": "Argentina"
     },
     {
       "id": 22,
       "km": 2320,
-      "name": "Armenia",
-      "est": true
+      "name": "Armenia"
     },
     {
       "id": 23,
       "km": 4020,
-      "name": "Australia",
-      "est": true
+      "name": "Australia"
     },
     {
       "id": 24,
       "km": 4530,
-      "name": "Austria",
-      "est": true
+      "name": "Austria"
     },
     {
       "id": 25,
-      "km": 1985,
-      "name": "Azerbaijan",
-      "est": true
+      "km": 2010,
+      "name": "Azerbaijan"
     },
     {
       "id": 26,
-      "km": 10840,
-      "name": "Bahamas",
-      "est": true
+      "km": 10845,
+      "name": "Bahamas"
     },
     {
       "id": 27,
-      "km": 2550,
-      "name": "Bahrain",
-      "est": true
+      "km": 2565,
+      "name": "Bahrain"
     },
     {
       "id": 28,
-      "km": 12345,
-      "name": "Barbados",
-      "est": true
+      "km": 12350,
+      "name": "Barbados"
     },
     {
       "id": 29,
       "km": 3420,
-      "name": "Belarus",
-      "est": true
+      "name": "Belarus"
     },
     {
       "id": 30,
-      "km": 5235,
-      "name": "Belgium",
-      "est": true
+      "km": 5240,
+      "name": "Belgium"
     },
     {
       "id": 31,
       "km": 11425,
-      "name": "Belize",
-      "est": true
+      "name": "Belize"
     },
     {
       "id": 32,
-      "km": 7480,
-      "name": "Benin",
-      "est": true
+      "km": 7485,
+      "name": "Benin"
     },
     {
       "id": 33,
       "km": 0,
-      "name": "Bhutan",
-      "est": true
+      "name": "Bhutan"
     },
     {
       "id": 34,
-      "km": 14735,
-      "name": "Bolivia",
-      "est": true
+      "km": 14730,
+      "name": "Bolivia"
     },
     {
       "id": 35,
       "km": 4435,
-      "name": "Bosnia and Herzegovina",
-      "est": true
+      "name": "Bosnia and Herzegovina"
     },
     {
       "id": 36,
-      "km": 12020,
-      "name": "Brazil",
-      "est": true
+      "km": 12025,
+      "name": "Brazil"
     },
     {
       "id": 37,
-      "km": 1580,
-      "name": "Brunei",
-      "est": true
+      "km": 1600,
+      "name": "Brunei"
     },
     {
       "id": 38,
       "km": 3735,
-      "name": "Bulgaria",
-      "est": true
+      "name": "Bulgaria"
     },
     {
       "id": 39,
-      "km": 7540,
-      "name": "Burkina Faso",
-      "est": true
+      "km": 7545,
+      "name": "Burkina Faso"
     },
     {
       "id": 40,
-      "km": 6310,
-      "name": "Burundi",
-      "est": true
+      "km": 6315,
+      "name": "Burundi"
     },
     {
       "id": 41,
       "km": 440,
-      "name": "Cambodia",
-      "est": true
+      "name": "Cambodia"
     },
     {
       "id": 42,
       "km": 6460,
-      "name": "Cameroon",
-      "est": true
+      "name": "Cameroon"
     },
     {
       "id": 43,
       "km": 4735,
-      "name": "Canada",
-      "est": true
+      "name": "Canada"
     },
     {
       "id": 44,
-      "km": 9380,
-      "name": "Cape Verde",
-      "est": true
+      "km": 9555,
+      "name": "Cape Verde"
     },
     {
       "id": 45,
       "km": 5900,
-      "name": "Central African Republic",
-      "est": true
+      "name": "Central African Republic"
     },
     {
       "id": 46,
-      "km": 14105,
-      "name": "Chile",
-      "est": true
+      "km": 15730,
+      "name": "Chile"
     },
     {
       "id": 47,
-      "km": 12550,
-      "name": "Colombia",
-      "est": true
+      "km": 12545,
+      "name": "Colombia"
     },
     {
       "id": 48,
-      "km": 6060,
-      "name": "Comoros",
-      "est": true
+      "km": 6075,
+      "name": "Comoros"
     },
     {
       "id": 49,
-      "km": 12295,
-      "name": "Costa Rica",
-      "est": true
+      "km": 12290,
+      "name": "Costa Rica"
     },
     {
       "id": 50,
-      "km": 4420,
-      "name": "Croatia",
-      "est": true
+      "km": 4430,
+      "name": "Croatia"
     },
     {
       "id": 51,
       "km": 11125,
-      "name": "Cuba",
-      "est": true
+      "name": "Cuba"
     },
     {
       "id": 52,
       "km": 3445,
-      "name": "Cyprus",
-      "est": true
+      "name": "Cyprus"
     },
     {
       "id": 53,
       "km": 4380,
-      "name": "Czechia",
-      "est": true
+      "name": "Czechia"
     },
     {
       "id": 54,
-      "km": 5800,
-      "name": "Democratic Republic of the Congo",
-      "est": true
+      "km": 5805,
+      "name": "Democratic Republic of the Congo"
     },
     {
       "id": 55,
-      "km": 4570,
-      "name": "Denmark",
-      "est": true
+      "km": 4725,
+      "name": "Denmark"
     },
     {
       "id": 56,
-      "km": 4130,
-      "name": "Djibouti",
-      "est": true
+      "km": 4135,
+      "name": "Djibouti"
     },
     {
       "id": 57,
       "km": 12185,
-      "name": "Dominica",
-      "est": true
+      "name": "Dominica"
     },
     {
       "id": 58,
-      "km": 11735,
-      "name": "Dominican Republic",
-      "est": true
+      "km": 11730,
+      "name": "Dominican Republic"
     },
     {
       "id": 59,
-      "km": 13065,
-      "name": "Ecuador",
-      "est": true
+      "km": 13160,
+      "name": "Ecuador"
     },
     {
       "id": 60,
-      "km": 3655,
-      "name": "Egypt",
-      "est": true
+      "km": 3660,
+      "name": "Egypt"
     },
     {
       "id": 61,
-      "km": 11805,
-      "name": "El Salvador",
-      "est": true
+      "km": 11815,
+      "name": "El Salvador"
     },
     {
       "id": 62,
       "km": 7500,
-      "name": "Equatorial Guinea",
-      "est": true
+      "name": "Equatorial Guinea"
     },
     {
       "id": 63,
-      "km": 4085,
-      "name": "Eritrea",
-      "est": true
+      "km": 4095,
+      "name": "Eritrea"
     },
     {
       "id": 64,
-      "km": 3765,
-      "name": "Estonia",
-      "est": true
+      "km": 3770,
+      "name": "Estonia"
     },
     {
       "id": 65,
       "km": 8085,
-      "name": "Eswatini",
-      "est": true
+      "name": "Eswatini"
     },
     {
       "id": 66,
-      "km": 4110,
-      "name": "Ethiopia",
-      "est": true
-    },
-    {
-      "id": 67,
-      "km": 15855,
-      "name": "Falkland Islands",
-      "est": true
+      "km": 4115,
+      "name": "Ethiopia"
     },
     {
       "id": 68,
-      "km": 7495,
-      "name": "Fiji",
-      "est": true
+      "km": 7885,
+      "name": "Fiji"
     },
     {
       "id": 69,
       "km": 3590,
-      "name": "Finland",
-      "est": true
+      "name": "Finland"
     },
     {
       "id": 70,
-      "km": 5155,
-      "name": "France",
-      "est": true
+      "km": 5150,
+      "name": "France"
     },
     {
       "id": 71,
-      "km": 7320,
-      "name": "Gabon",
-      "est": true
+      "km": 7325,
+      "name": "Gabon"
     },
     {
       "id": 72,
       "km": 8860,
-      "name": "Gambia",
-      "est": true
+      "name": "Gambia"
     },
     {
       "id": 73,
       "km": 2285,
-      "name": "Georgia",
-      "est": true
+      "name": "Georgia"
     },
     {
       "id": 74,
       "km": 4620,
-      "name": "Germany",
-      "est": true
+      "name": "Germany"
     },
     {
       "id": 75,
       "km": 7835,
-      "name": "Ghana",
-      "est": true
+      "name": "Ghana"
     },
     {
       "id": 76,
       "km": 3940,
-      "name": "Greece",
-      "est": true
-    },
-    {
-      "id": 77,
-      "km": 4705,
-      "name": "Greenland",
-      "est": true
+      "name": "Greece"
     },
     {
       "id": 78,
       "km": 12545,
-      "name": "Grenada",
-      "est": true
+      "name": "Grenada"
     },
     {
       "id": 79,
       "km": 11400,
-      "name": "Guatemala",
-      "est": true
+      "name": "Guatemala"
     },
     {
       "id": 80,
       "km": 8520,
-      "name": "Guinea",
-      "est": true
+      "name": "Guinea"
     },
     {
       "id": 81,
       "km": 8905,
-      "name": "Guinea-Bissau",
-      "est": true
+      "name": "Guinea-Bissau"
     },
     {
       "id": 82,
       "km": 12840,
-      "name": "Guyana",
-      "est": true
+      "name": "Guyana"
     },
     {
       "id": 83,
-      "km": 11690,
-      "name": "Haiti",
-      "est": true
+      "km": 11700,
+      "name": "Haiti"
     },
     {
       "id": 84,
-      "km": 11715,
-      "name": "Honduras",
-      "est": true
-    },
-    {
-      "id": 85,
-      "km": 0,
-      "name": "Hong Kong",
-      "est": true
+      "km": 11720,
+      "name": "Honduras"
     },
     {
       "id": 86,
       "km": 4110,
-      "name": "Hungary",
-      "est": true
+      "name": "Hungary"
     },
     {
       "id": 87,
       "km": 5585,
-      "name": "Iceland",
-      "est": true
+      "name": "Iceland"
     },
     {
       "id": 88,
       "km": 0,
-      "name": "India",
-      "est": true
+      "name": "India"
     },
     {
       "id": 89,
-      "km": 1565,
-      "name": "Indonesia",
-      "est": true
+      "km": 1700,
+      "name": "Indonesia"
     },
     {
       "id": 90,
-      "km": 1130,
-      "name": "Iran",
-      "est": true
+      "km": 1140,
+      "name": "Iran"
     },
     {
       "id": 91,
-      "km": 2435,
-      "name": "Iraq",
-      "est": true
+      "km": 2465,
+      "name": "Iraq"
     },
     {
       "id": 92,
-      "km": 5895,
-      "name": "Ireland",
-      "est": true
+      "km": 5910,
+      "name": "Ireland"
     },
     {
       "id": 93,
       "km": 3420,
-      "name": "Israel",
-      "est": true
+      "name": "Israel"
     },
     {
       "id": 94,
-      "km": 4640,
-      "name": "Italy",
-      "est": true
+      "km": 4635,
+      "name": "Italy"
     },
     {
       "id": 95,
       "km": 8175,
-      "name": "Ivory Coast",
-      "est": true
+      "name": "Ivory Coast"
     },
     {
       "id": 96,
-      "km": 11755,
-      "name": "Jamaica",
-      "est": true
+      "km": 11750,
+      "name": "Jamaica"
     },
     {
       "id": 97,
-      "km": 410,
-      "name": "Japan",
-      "est": true
+      "km": 595,
+      "name": "Japan"
     },
     {
       "id": 98,
-      "km": 3170,
-      "name": "Jordan",
-      "est": true
+      "km": 3175,
+      "name": "Jordan"
     },
     {
       "id": 99,
       "km": 0,
-      "name": "Kazakhstan",
-      "est": true
+      "name": "Kazakhstan"
     },
     {
       "id": 100,
       "km": 4910,
-      "name": "Kenya",
-      "est": true
+      "name": "Kenya"
     },
     {
       "id": 101,
-      "km": 6050,
-      "name": "Kiribati",
-      "est": true
+      "km": 8220,
+      "name": "Kiribati"
     },
     {
       "id": 102,
-      "km": 2530,
-      "name": "Kuwait",
-      "est": true
+      "km": 2550,
+      "name": "Kuwait"
     },
     {
       "id": 103,
       "km": 0,
-      "name": "Kyrgyzstan",
-      "est": true
+      "name": "Kyrgyzstan"
     },
     {
       "id": 104,
       "km": 0,
-      "name": "Laos",
-      "est": true
+      "name": "Laos"
     },
     {
       "id": 105,
       "km": 3755,
-      "name": "Latvia",
-      "est": true
+      "name": "Latvia"
     },
     {
       "id": 106,
       "km": 3325,
-      "name": "Lebanon",
-      "est": true
+      "name": "Lebanon"
     },
     {
       "id": 107,
       "km": 8520,
-      "name": "Lesotho",
-      "est": true
+      "name": "Lesotho"
     },
     {
       "id": 108,
-      "km": 8805,
-      "name": "Liberia",
-      "est": true
+      "km": 8810,
+      "name": "Liberia"
     },
     {
       "id": 109,
       "km": 4420,
-      "name": "Libya",
-      "est": true
+      "name": "Libya"
     },
     {
       "id": 110,
       "km": 5105,
-      "name": "Liechtenstein",
-      "est": true
+      "name": "Liechtenstein"
     },
     {
       "id": 111,
-      "km": 3830,
-      "name": "Lithuania",
-      "est": true
-    },
-    {
-      "id": 112,
-      "km": 0,
-      "name": "Macau",
-      "est": true
+      "km": 3845,
+      "name": "Lithuania"
     },
     {
       "id": 113,
-      "km": 5765,
-      "name": "Madagascar",
-      "est": true
+      "km": 5785,
+      "name": "Madagascar"
     },
     {
       "id": 114,
-      "km": 6580,
-      "name": "Malawi",
-      "est": true
+      "km": 6585,
+      "name": "Malawi"
     },
     {
       "id": 115,
-      "km": 1455,
-      "name": "Malaysia",
-      "est": true
+      "km": 1470,
+      "name": "Malaysia"
     },
     {
       "id": 116,
       "km": 2945,
-      "name": "Maldives",
-      "est": true
+      "name": "Maldives"
     },
     {
       "id": 117,
       "km": 6935,
-      "name": "Mali",
-      "est": true
+      "name": "Mali"
     },
     {
       "id": 118,
-      "km": 5130,
-      "name": "Malta",
-      "est": true
+      "km": 5125,
+      "name": "Malta"
     },
     {
       "id": 119,
-      "km": 4940,
-      "name": "Marshall Islands",
-      "est": true
+      "km": 5595,
+      "name": "Marshall Islands"
     },
     {
       "id": 120,
       "km": 7335,
-      "name": "Mauritania",
-      "est": true
+      "name": "Mauritania"
     },
     {
       "id": 121,
-      "km": 6110,
-      "name": "Mauritius",
-      "est": true
+      "km": 6120,
+      "name": "Mauritius"
     },
     {
       "id": 122,
-      "km": 8565,
-      "name": "Mexico",
-      "est": true
+      "km": 8575,
+      "name": "Mexico"
     },
     {
       "id": 123,
-      "km": 2620,
-      "name": "Micronesia",
-      "est": true
+      "km": 4515,
+      "name": "Micronesia"
     },
     {
       "id": 124,
-      "km": 3580,
-      "name": "Moldova",
-      "est": true
+      "km": 3590,
+      "name": "Moldova"
     },
     {
       "id": 125,
       "km": 5380,
-      "name": "Monaco",
-      "est": true
+      "name": "Monaco"
     },
     {
       "id": 126,
       "km": 0,
-      "name": "Mongolia",
-      "est": true
+      "name": "Mongolia"
     },
     {
       "id": 127,
-      "km": 4405,
-      "name": "Montenegro",
-      "est": true
+      "km": 4410,
+      "name": "Montenegro"
     },
     {
       "id": 128,
       "km": 6515,
-      "name": "Morocco",
-      "est": true
+      "name": "Morocco"
     },
     {
       "id": 129,
       "km": 6190,
-      "name": "Mozambique",
-      "est": true
+      "name": "Mozambique"
     },
     {
       "id": 130,
       "km": 0,
-      "name": "Myanmar",
-      "est": true
+      "name": "Myanmar"
     },
     {
       "id": 131,
       "km": 7905,
-      "name": "Namibia",
-      "est": true
+      "name": "Namibia"
     },
     {
       "id": 132,
       "km": 5790,
-      "name": "Nauru",
-      "est": true
+      "name": "Nauru"
     },
     {
       "id": 133,
       "km": 0,
-      "name": "Nepal",
-      "est": true
+      "name": "Nepal"
     },
     {
       "id": 134,
       "km": 5110,
-      "name": "Netherlands",
-      "est": true
-    },
-    {
-      "id": 135,
-      "km": 6595,
-      "name": "New Caledonia",
-      "est": true
+      "name": "Netherlands"
     },
     {
       "id": 136,
-      "km": 8070,
-      "name": "New Zealand",
-      "est": true
+      "km": 8760,
+      "name": "New Zealand"
     },
     {
       "id": 137,
       "km": 11940,
-      "name": "Nicaragua",
-      "est": true
+      "name": "Nicaragua"
     },
     {
       "id": 138,
-      "km": 6485,
-      "name": "Nigeria",
-      "est": true
+      "km": 6490,
+      "name": "Nigeria"
     },
     {
       "id": 139,
       "km": 0,
-      "name": "North Korea",
-      "est": true
+      "name": "North Korea"
     },
     {
       "id": 140,
       "km": 4225,
-      "name": "North Macedonia",
-      "est": true
+      "name": "North Macedonia"
     },
     {
       "id": 141,
-      "km": 3705,
-      "name": "Norway",
-      "est": true
+      "km": 3710,
+      "name": "Norway"
     },
     {
       "id": 142,
-      "km": 2075,
-      "name": "Oman",
-      "est": true
+      "km": 2110,
+      "name": "Oman"
     },
     {
       "id": 143,
       "km": 0,
-      "name": "Pakistan",
-      "est": true
+      "name": "Pakistan"
     },
     {
       "id": 144,
-      "km": 2525,
-      "name": "Palau",
-      "est": true
+      "km": 2540,
+      "name": "Palau"
     },
     {
       "id": 145,
-      "km": 3490,
-      "name": "Palestine",
-      "est": true
+      "km": 3495,
+      "name": "Palestine"
     },
     {
       "id": 146,
-      "km": 12560,
-      "name": "Panama",
-      "est": true
+      "km": 12570,
+      "name": "Panama"
     },
     {
       "id": 147,
-      "km": 3870,
-      "name": "Papua New Guinea",
-      "est": true
+      "km": 3875,
+      "name": "Papua New Guinea"
     },
     {
       "id": 148,
       "km": 14890,
-      "name": "Paraguay",
-      "est": true
+      "name": "Paraguay"
     },
     {
       "id": 149,
-      "km": 13825,
-      "name": "Peru",
-      "est": true
+      "km": 13830,
+      "name": "Peru"
     },
     {
       "id": 150,
-      "km": 535,
-      "name": "Philippines",
-      "est": true
+      "km": 650,
+      "name": "Philippines"
     },
     {
       "id": 151,
       "km": 3995,
-      "name": "Poland",
-      "est": true
+      "name": "Poland"
     },
     {
       "id": 152,
       "km": 6500,
-      "name": "Portugal",
-      "est": true
-    },
-    {
-      "id": 153,
-      "km": 11950,
-      "name": "Puerto Rico",
-      "est": true
+      "name": "Portugal"
     },
     {
       "id": 154,
-      "km": 2490,
-      "name": "Qatar",
-      "est": true
+      "km": 2500,
+      "name": "Qatar"
     },
     {
       "id": 155,
-      "km": 6795,
-      "name": "Republic of the Congo",
-      "est": true
+      "km": 6800,
+      "name": "Republic of the Congo"
     },
     {
       "id": 156,
-      "km": 3625,
-      "name": "Romania",
-      "est": true
+      "km": 3630,
+      "name": "Romania"
     },
     {
       "id": 157,
       "km": 0,
-      "name": "Russia",
-      "est": true
+      "name": "Russia"
     },
     {
       "id": 158,
-      "km": 6200,
-      "name": "Rwanda",
-      "est": true
+      "km": 6210,
+      "name": "Rwanda"
     },
     {
       "id": 159,
       "km": 12050,
-      "name": "Saint Kitts and Nevis",
-      "est": true
+      "name": "Saint Kitts and Nevis"
     },
     {
       "id": 160,
-      "km": 8455,
-      "name": "Samoa",
-      "est": true
+      "km": 8460,
+      "name": "Samoa"
     },
     {
       "id": 161,
-      "km": 4985,
-      "name": "San Marino",
-      "est": true
+      "km": 4990,
+      "name": "San Marino"
     },
     {
       "id": 162,
-      "km": 7860,
-      "name": "Sao Tome and Principe",
-      "est": true
+      "km": 8020,
+      "name": "Sao Tome and Principe"
     },
     {
       "id": 163,
-      "km": 2440,
-      "name": "Saudi Arabia",
-      "est": true
+      "km": 2445,
+      "name": "Saudi Arabia"
     },
     {
       "id": 164,
-      "km": 4180,
-      "name": "Serbia",
-      "est": true
+      "km": 4190,
+      "name": "Serbia"
     },
     {
       "id": 165,
-      "km": 4695,
-      "name": "Seychelles",
-      "est": true
+      "km": 4705,
+      "name": "Seychelles"
     },
     {
       "id": 166,
       "km": 8875,
-      "name": "Sierra Leone",
-      "est": true
+      "name": "Sierra Leone"
     },
     {
       "id": 167,
       "km": 1970,
-      "name": "Singapore",
-      "est": true
+      "name": "Singapore"
     },
     {
       "id": 168,
       "km": 4120,
-      "name": "Slovakia",
-      "est": true
+      "name": "Slovakia"
     },
     {
       "id": 169,
       "km": 4610,
-      "name": "Slovenia",
-      "est": true
+      "name": "Slovenia"
     },
     {
       "id": 170,
-      "km": 3560,
-      "name": "Somalia",
-      "est": true
+      "km": 3555,
+      "name": "Somalia"
     },
     {
       "id": 171,
       "km": 7835,
-      "name": "South Africa",
-      "est": true
+      "name": "South Africa"
     },
     {
       "id": 172,
-      "km": 300,
-      "name": "South Korea",
-      "est": true
+      "km": 305,
+      "name": "South Korea"
     },
     {
       "id": 173,
-      "km": 4945,
-      "name": "South Sudan",
-      "est": true
+      "km": 4955,
+      "name": "South Sudan"
     },
     {
       "id": 174,
-      "km": 5750,
-      "name": "Spain",
-      "est": true
+      "km": 5755,
+      "name": "Spain"
     },
     {
       "id": 175,
-      "km": 2105,
-      "name": "Sri Lanka",
-      "est": true
+      "km": 2130,
+      "name": "Sri Lanka"
     },
     {
       "id": 176,
       "km": 3965,
-      "name": "Sudan",
-      "est": true
+      "name": "Sudan"
     },
     {
       "id": 177,
-      "km": 12675,
-      "name": "Suriname",
-      "est": true
+      "km": 12670,
+      "name": "Suriname"
     },
     {
       "id": 178,
       "km": 3965,
-      "name": "Sweden",
-      "est": true
+      "name": "Sweden"
     },
     {
       "id": 179,
-      "km": 5045,
-      "name": "Switzerland",
-      "est": true
+      "km": 5050,
+      "name": "Switzerland"
     },
     {
       "id": 180,
       "km": 2730,
-      "name": "Syria",
-      "est": true
+      "name": "Syria"
     },
     {
       "id": 181,
-      "km": 10,
-      "name": "Taiwan",
-      "est": true
+      "km": 155,
+      "name": "Taiwan"
     },
     {
       "id": 182,
       "km": 0,
-      "name": "Tajikistan",
-      "est": true
+      "name": "Tajikistan"
     },
     {
       "id": 183,
-      "km": 5770,
-      "name": "Tanzania",
-      "est": true
+      "km": 5795,
+      "name": "Tanzania"
     },
     {
       "id": 184,
-      "km": 120,
-      "name": "Thailand",
-      "est": true
+      "km": 125,
+      "name": "Thailand"
     },
     {
       "id": 185,
-      "km": 3420,
-      "name": "Timor-Leste",
-      "est": true
+      "km": 3445,
+      "name": "Timor-Leste"
     },
     {
       "id": 186,
-      "km": 7760,
-      "name": "Togo",
-      "est": true
+      "km": 7765,
+      "name": "Togo"
     },
     {
       "id": 187,
-      "km": 8670,
-      "name": "Tonga",
-      "est": true
+      "km": 8730,
+      "name": "Tonga"
     },
     {
       "id": 188,
-      "km": 12590,
-      "name": "Trinidad and Tobago",
-      "est": true
+      "km": 12675,
+      "name": "Trinidad and Tobago"
     },
     {
       "id": 189,
       "km": 5365,
-      "name": "Tunisia",
-      "est": true
+      "name": "Tunisia"
     },
     {
       "id": 190,
       "km": 2465,
-      "name": "Turkey",
-      "est": true
+      "name": "Turkey"
     },
     {
       "id": 191,
-      "km": 625,
-      "name": "Turkmenistan",
-      "est": true
+      "km": 635,
+      "name": "Turkmenistan"
     },
     {
       "id": 192,
-      "km": 6955,
-      "name": "Tuvalu",
-      "est": true
+      "km": 7415,
+      "name": "Tuvalu"
     },
     {
       "id": 193,
-      "km": 5505,
-      "name": "Uganda",
-      "est": true
+      "km": 5515,
+      "name": "Uganda"
     },
     {
       "id": 194,
       "km": 2840,
-      "name": "Ukraine",
-      "est": true
+      "name": "Ukraine"
     },
     {
       "id": 195,
-      "km": 2115,
-      "name": "United Arab Emirates",
-      "est": true
+      "km": 2130,
+      "name": "United Arab Emirates"
     },
     {
       "id": 196,
-      "km": 5285,
-      "name": "United Kingdom",
-      "est": true
+      "km": 5480,
+      "name": "United Kingdom"
     },
     {
       "id": 197,
-      "km": 2690,
-      "name": "United States",
-      "est": true
+      "km": 3655,
+      "name": "United States"
     },
     {
       "id": 198,
-      "km": 15255,
-      "name": "Uruguay",
-      "est": true
+      "km": 15260,
+      "name": "Uruguay"
     },
     {
       "id": 199,
-      "km": 110,
-      "name": "Uzbekistan",
-      "est": true
+      "km": 145,
+      "name": "Uzbekistan"
     },
     {
       "id": 200,
       "km": 5060,
-      "name": "Vatican City",
-      "est": true
+      "name": "Vatican City"
     },
     {
       "id": 201,
       "km": 12605,
-      "name": "Venezuela",
-      "est": true
+      "name": "Venezuela"
     },
     {
       "id": 202,
       "km": 0,
-      "name": "Vietnam",
-      "est": true
-    },
-    {
-      "id": 203,
-      "km": 7490,
-      "name": "Western Sahara",
-      "est": true
+      "name": "Vietnam"
     },
     {
       "id": 204,
-      "km": 2970,
-      "name": "Yemen",
-      "est": true
+      "km": 2975,
+      "name": "Yemen"
     },
     {
       "id": 205,
       "km": 6660,
-      "name": "Zambia",
-      "est": true
+      "name": "Zambia"
     },
     {
       "id": 206,
-      "km": 7245,
-      "name": "Zimbabwe",
-      "est": true
+      "km": 7250,
+      "name": "Zimbabwe"
     }
   ]
 }
