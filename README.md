@@ -11,6 +11,7 @@ Die Daten liegen in `data.json` in diesem Repo – dadurch sind sie auf allen Ge
 | `-1234` | alle Länder mit genau 1234 km |
 | `~1234` / `~1234 50` | Länder im Bereich ±20 km (bzw. ±50) |
 | `?fra` | Länder suchen, deren Name „fra“ enthält |
+| `von Japan` | alle Entfernungen von Japan zu den anderen Ländern, gleiche zusammengefasst, nach Anzahl absteigend (Modus „Von Land“) |
 | `liste` / `#` | alle Einträge |
 | `löschen Frankreich` | Eintrag entfernen (mit Rückfrage) |
 | `neu` | Daten neu von GitHub laden |
@@ -27,3 +28,7 @@ Die Daten liegen in `data.json` in diesem Repo – dadurch sind sie auf allen Ge
    - Permissions → Repository permissions → **Contents: Read and write**
 3. Auf jedem Gerät die Seite öffnen, unter **Einstellungen** das Token eintragen → *Speichern & laden*.
    Bei *Branch* den Branch eintragen, auf dem die Daten liegen sollen (leer = Standard-Branch des Repos).
+
+## Entfernungsmatrix
+
+`distances.json` enthält die Entfernung zwischen allen 197 Ländern (Methode wie Globle, auf 5 km gerundet; Matrixwerte in 5-km-Schritten, also `Wert × 5` = km).

@@ -1,7 +1,7 @@
 // Offline-Speicher für die App.
 // Eigene Dateien: erst Netz (immer aktuell), sonst Speicher. Karten-Bibliotheken: erst Speicher.
-const CACHE = "laender-km-v1";
-const SHELL = ["./", "index.html", "data.json", "manifest.json", "icon-180.png", "icon-192.png", "icon-512.png"];
+const CACHE = "laender-km-v2";
+const SHELL = ["./", "index.html", "data.json", "distances.json", "manifest.json", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

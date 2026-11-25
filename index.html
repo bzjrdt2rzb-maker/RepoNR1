@@ -151,6 +151,15 @@
   .kbd .row button.wide { flex: 1 1 auto; }
   .kbd .row button.space { flex: 3 1 auto; }
   [hidden] { display: none !important; }
+  .mode[data-mode=from].on { background: linear-gradient(135deg, #8f7bff, #5a8cff); }
+  .display.from .sign { color: #9aa8ff; width: auto; }
+  #padCard.fromres #out { height: auto; max-height: 58vh; min-height: 120px; overflow-y: auto; }
+  .fhead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .fhead button { padding: 8px 12px; font-size: .9rem; }
+  .grp { display: block; width: 100%; text-align: left; padding: 8px 10px; margin: 0 0 6px; border-radius: 10px;
+    background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--text); font-weight: 400; font-size: 1rem; }
+  .grp .gk { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent); margin-right: 8px; }
+  .grp .gc { display: inline-block; min-width: 2.2em; margin-right: 8px; color: var(--accent2); font-weight: 700; }
   .big.approx { background: rgba(143, 211, 255, .08); color: #bfe3ff; border-color: rgba(143, 211, 255, .3); font-size: 1.05rem; }
   .big.approx::before { content: "≈ "; }
   .big small { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: 4px; }
@@ -163,7 +172,7 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v8</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v9</span></p>
     <span id="status">Lade …</span>
   </header>
 
@@ -171,6 +180,7 @@
     <div class="modes">
       <button type="button" class="mode" data-mode="plus">＋ Speichern</button>
       <button type="button" class="mode" data-mode="minus">− Suchen</button>
+      <button type="button" class="mode" data-mode="from">🌍 Von Land</button>
       <button type="button" class="mode" data-mode="text">⌨ Befehl</button>
     </div>
     <div id="padTop"><div class="display" id="display"></div></div>
@@ -194,6 +204,7 @@
       <p style="margin:0 0 10px;font-size:.92rem">
         <b>＋ Speichern:</b> Kilometer auf dem Zahlenfeld tippen → <b>Weiter</b> (oder Leertaste/Enter) → Land auf der Tastatur tippen → Vorschlag antippen oder <b>↵</b> (nimmt den markierten Vorschlag).<br>
         <b>− Suchen:</b> Kilometer tippen – Treffer erscheinen sofort. <b>↵</b> leert das Feld für die nächste Zahl.<br>
+        <b>🌍 Von Land:</b> Startland wählen (Tastatur, Vorschlag antippen) → alle Entfernungen von dort zu den anderen Ländern, gleiche Entfernungen zusammengefasst und absteigend nach Anzahl der Länder sortiert. Antippen einer Zeile markiert die Länder auf dem Globus.<br>
         <b>⌨ Befehl:</b> Freie Eingabe für alle Befehle unten.<br>
         Der gewählte Modus bleibt, bis du ihn änderst.<br>
         <b>Werte:</b> Alle 196 Globle-Länder sind mit ihrer Entfernung zu China eingetragen – berechnet genau wie Globle (nächste Grenzpunkte, Großkreis, auf 5 km gerundet).
@@ -208,6 +219,8 @@
             <td>Zeigt alle Länder im Bereich 1234 ± 20 km (oder ± der zweiten Zahl, hier 50), nach Abstand sortiert.</td></tr>
         <tr><td><code>?Frankreich</code><br><code>?fra</code></td>
             <td>Sucht Länder, deren Name den Text enthält, und zeigt deren Kilometer.</td></tr>
+        <tr><td><code>von Japan</code></td>
+            <td>Zeigt alle Entfernungen von Japan zu den anderen Ländern (wie Modus „Von Land“).</td></tr>
         <tr><td><code>liste</code> oder <code>#</code></td>
             <td>Zeigt alle Einträge, nach Kilometern sortiert.</td></tr>
         <tr><td><code>umbenennen Luxembourh &gt; Luxembourg</code></td>
@@ -453,6 +466,12 @@
         : show(`Kein Land mit „${esc(m[1].trim())}“ gefunden.`, "err");
     }
 
+    if ((m = input.match(/^(?:von|from)\s+(.+)$/i))) {
+      const c = suggestions(m[1])[0];
+      if (!c) return show(`Kein Land „${esc(m[1].trim())}“ gefunden.`, "err");
+      return showFrom(c);
+    }
+
     if (/^(liste|list|#)$/i.test(input)) {
       $("listDetails").open = true; renderList();
       return show(`${data.entries.length} Einträge – siehe Liste unten.`, "muted");
@@ -544,24 +563,61 @@
   }
   const titleCase = (t) => t.trim().replace(/\s+/g, " ").replace(/(^|[\s-])([a-z])/g, (m0, a, b) => a + b.toUpperCase());
 
-  const pad = { mode: ["plus", "minus", "text"].includes(store.get("lk_mode")) ? store.get("lk_mode") : "plus", stage: "num", km: "", name: "" };
+  const pad = { mode: ["plus", "minus", "from", "text"].includes(store.get("lk_mode")) ? store.get("lk_mode") : "plus", stage: "num", km: "", name: "" };
+  if (pad.mode === "from") pad.stage = "name";
+
+  // --- Entfernungsmatrix (distances.json): alle Länder untereinander, in 5-km-Schritten ---
+  let dist = null;
+  async function loadDist() {
+    if (dist) return dist;
+    const r = await fetch("distances.json");
+    if (!r.ok) throw new Error(`Entfernungstabelle nicht ladbar (${r.status}).`);
+    const j = await r.json();
+    dist = { names: j.names, step: j.step, m: j.matrix, idx: new Map(j.names.map((n, i) => [norm(n), i])) };
+    return dist;
+  }
+  async function showFrom(start) {
+    const D = await loadDist();
+    const i = D.idx.get(norm(start));
+    if (i === undefined) return show(`Für „${esc(start)}“ gibt es keine Entfernungen.`, "err");
+    const groups = new Map();
+    D.names.forEach((n, j) => { if (j === i) return; const km = D.m[i][j] * D.step; (groups.get(km) || groups.set(km, []).get(km)).push(n); });
+    const rows = [...groups].map(([km, names]) => ({ km, names: names.sort((a, b) => a.localeCompare(b, "en")) }))
+      .sort((a, b) => b.names.length - a.names.length || a.km - b.km);
+    pad.start = D.names[i]; pad.stage = "result"; pad.name = "";
+    renderPad();
+    window.globeFocus?.([D.names[i]]);
+    show(`<div class="fhead"><span>Von <b>${esc(D.names[i])}</b> · ${rows.length} verschiedene Entfernungen</span>` +
+      `<button type="button" class="secondary" data-back="1">← Anderes Land</button></div>` +
+      rows.map((r) => `<button type="button" class="grp" data-names="${esc(r.names.join("|"))}"><span class="gk">${r.km} km</span><span class="gc">${r.names.length}×</span>${r.names.map(esc).join(", ")}</button>`).join(""), "");
+    out.scrollTop = 0;
+  }
+  const backToPick = () => { pad.stage = "name"; pad.name = ""; show(""); renderPad(); };
 
   function renderPad() {
     document.querySelectorAll(".mode").forEach((b) => b.classList.toggle("on", b.dataset.mode === pad.mode));
     const text = pad.mode === "text";
-    $("padArea").hidden = text; $("padTop").hidden = text; $("cmdForm").hidden = !text;
+    const res = pad.mode === "from" && pad.stage === "result";
+    $("padArea").hidden = text || res; $("padTop").hidden = text; $("cmdForm").hidden = !text;
     $("padCard").classList.toggle("pad", !text);
+    $("padCard").classList.toggle("fromres", res);
     if (text) return;
     const d = $("display");
     d.className = "display " + pad.mode;
     const sign = pad.mode === "plus" ? "+" : "−";
-    if (pad.stage === "num") {
+    if (pad.mode === "from") {
+      d.innerHTML = res
+        ? `<span class="sign">🌍 Von</span><span class="nm">${esc(pad.start)}</span>`
+        : `<span class="sign">🌍 Von</span>` + (pad.name ? `<span class="nm">${esc(pad.name)}</span>` : `<span class="ph">Startland eingeben</span>`) + `<span class="caret"></span>`;
+    } else if (pad.stage === "num") {
       d.innerHTML = `<span class="sign">${sign}</span>` + (pad.km ? `<span class="km">${pad.km}</span>` : `<span class="ph">Kilometer eingeben</span>`) + `<span class="caret"></span>`;
     } else {
       d.innerHTML = `<span class="sign">${sign}</span><span class="km done">${pad.km}</span>` + (pad.name ? `<span class="nm">${esc(pad.name)}</span>` : `<span class="ph">Land eingeben</span>`) + `<span class="caret"></span>`;
     }
-    $("numpad").hidden = pad.stage !== "num";
+    $("numpad").hidden = pad.mode === "from" || pad.stage !== "num";
     $("kbd").hidden = pad.stage !== "name";
+    const enterBtn = $("kbd").querySelector('[data-k=enter]');
+    if (enterBtn) enterBtn.textContent = pad.mode === "from" ? "↵ Los" : "↵ Speichern";
     const act = $("numpad").querySelector(".act");
     if (act) act.textContent = pad.mode === "plus" ? "Weiter →" : "↵ Neu";
     // Vorschläge
@@ -569,7 +625,7 @@
     if (pad.stage === "name") {
       const list = suggestions(pad.name);
       sg.innerHTML = list.map((n, i) => {
-        const ex = data.entries.find((e) => norm(e.name) === norm(n));
+        const ex = pad.mode !== "from" && data.entries.find((e) => norm(e.name) === norm(n));
         return `<button type="button" class="chip${i === 0 ? " top" : ""}" data-name="${esc(n)}">${esc(n)}${ex ? `<small>${ex.km} km</small>` : ""}</button>`;
       }).join("");
     } else sg.innerHTML = "";
@@ -590,6 +646,11 @@
     }
   }
 
+  async function pickFrom(name) {
+    name = (name || "").trim();
+    if (!name) return;
+    try { await showFrom(name); } catch (e) { show(esc(e.message), "err"); }
+  }
   async function savePlus(name) {
     name = (name || "").trim();
     if (!name) return;
@@ -600,11 +661,13 @@
   function enterName() {
     if (pad.stage !== "name") return;
     const list = suggestions(pad.name);
+    if (pad.mode === "from") return pickFrom(list[0]);
     savePlus(list[0] || titleCase(pad.name));
   }
 
   function key(k) {
     if (busy) return;
+    if (pad.mode === "from" && pad.stage === "result") { if (k === "back" || k === "tonum") backToPick(); return; }
     if (pad.stage === "num") {
       if (/^\d$/.test(k)) { if (pad.km.length < 6) pad.km = (pad.km === "0" ? "" : pad.km) + k; liveNum(); }
       else if (k === "back") { pad.km = pad.km.slice(0, -1); liveNum(); }
@@ -614,8 +677,8 @@
         else { history.push(`-${pad.km}`); hIdx = history.length; histBox.innerHTML = history.slice(-5).reverse().map((h) => `<div>› ${esc(h)}</div>`).join(""); pad.km = ""; }
       }
     } else {
-      if (k === "back") { if (pad.name) pad.name = pad.name.slice(0, -1); else pad.stage = "num"; }
-      else if (k === "tonum") { pad.stage = "num"; }
+      if (k === "back") { if (pad.name) pad.name = pad.name.slice(0, -1); else if (pad.mode !== "from") pad.stage = "num"; }
+      else if (k === "tonum") { if (pad.mode !== "from") pad.stage = "num"; }
       else if (k === "enter") return enterName();
       else if (k === " ") { if (pad.name && !pad.name.endsWith(" ")) pad.name += " "; }
       else if (k.length === 1) {
@@ -638,14 +701,19 @@
     const b = ev.target.closest("button"); if (!b) return;
     ev.preventDefault();
     if (b.dataset.k) key(b.dataset.k);
-    else if (b.dataset.name) savePlus(b.dataset.name);
+    else if (b.dataset.name) (pad.mode === "from" ? pickFrom : savePlus)(b.dataset.name);
   };
   $("numpad").addEventListener("click", fire);
   $("kbd").addEventListener("click", fire);
   $("suggest").addEventListener("click", fire);
+  out.addEventListener("click", (ev) => {
+    if (ev.target.closest("[data-back]")) return backToPick();
+    const g = ev.target.closest(".grp");
+    if (g) window.globeFocus?.(g.dataset.names.split("|"));
+  });
   document.querySelectorAll(".mode").forEach((b) => b.addEventListener("click", () => {
     pad.mode = b.dataset.mode; store.set("lk_mode", pad.mode);
-    pad.stage = "num"; pad.km = ""; pad.name = ""; show("");
+    pad.stage = pad.mode === "from" ? "name" : "num"; pad.km = ""; pad.name = ""; show("");
     renderPad();
     if (pad.mode === "text") $("cmd").focus();
   }));
@@ -655,6 +723,10 @@
     if (pad.mode === "text" || ev.metaKey || ev.ctrlKey || ev.altKey) return;
     if (ev.target.closest && ev.target.closest("input, textarea, select")) return;
     let k = null;
+    if (pad.mode === "from" && pad.stage === "result") {
+      if (ev.key === "Backspace" || ev.key === "Escape") { ev.preventDefault(); backToPick(); }
+      return;
+    }
     if (pad.stage === "num") {
       if (/^\d$/.test(ev.key)) k = ev.key;
       else if (ev.key === "Backspace") k = "back";
