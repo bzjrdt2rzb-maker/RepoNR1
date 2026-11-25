@@ -118,7 +118,15 @@
   .display .ph { color: var(--muted); font-weight: 400; font-size: 1rem; }
   .display .caret { width: 2px; height: 1.3em; background: var(--accent); align-self: center; margin-left: -8px; animation: blink 1s steps(1) infinite; }
   @keyframes blink { 50% { opacity: 0; } }
-  .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; min-height: 0; }
+  .suggest { display: flex; flex-wrap: nowrap; gap: 6px; margin: 10px 0 0; height: 44px; align-items: center;
+    overflow-x: auto; overflow-y: hidden; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .suggest::-webkit-scrollbar { display: none; }
+  .suggest .chip { flex: 0 0 auto; white-space: nowrap; }
+  .suggest:empty::before { content: "Vorschläge erscheinen hier"; color: var(--muted); font-size: .85rem; opacity: .6; }
+  /* feste Höhen im Pad-Modus, damit die Tasten nicht verrutschen */
+  #padCard.pad #out { height: 96px; overflow-y: auto; margin-top: 10px; white-space: normal; }
+  #padCard.pad .display { height: 58px; }
+  #out .big { margin: 2px 6px 4px 0; }
   .chip { font-weight: 600; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--text); border: 1px solid var(--border); }
   .chip.top { background: rgba(63, 208, 201, .18); border-color: var(--accent); }
   .chip small { color: var(--muted); font-weight: 400; margin-left: 4px; }
@@ -146,11 +154,11 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v6</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v7</span></p>
     <span id="status">Lade …</span>
   </header>
 
-  <div class="card">
+  <div class="card" id="padCard">
     <div class="modes">
       <button type="button" class="mode" data-mode="plus">＋ Speichern</button>
       <button type="button" class="mode" data-mode="minus">− Suchen</button>
@@ -368,7 +376,7 @@
   }
 
   // --- Befehle ---
-  const fmt = (list) => list.map((e) => `<span class="big">${esc(e.name)}</span>`).join("<br>");
+  const fmt = (list) => list.map((e) => `<span class="big">${esc(e.name)}</span>`).join(" ");
   // Treffer für eine km-Zahl: exakte + berechnete (≈) Einträge in der Nähe
   const TOL = 15;
   function lookup(km) {
@@ -378,9 +386,8 @@
     return { exact, approx, all: [...exact, ...approx] };
   }
   const fmtLookup = (r, km) =>
-    r.exact.map((e) => `<span class="big${e.est ? " approx" : ""}">${esc(e.name)}</span>`).join("<br>") +
-    (r.exact.length && r.approx.length ? "<br>" : "") +
-    r.approx.map((e) => `<span class="big approx">${esc(e.name)} <small>${e.km}</small></span>`).join("<br>");
+    r.exact.map((e) => `<span class="big${e.est ? " approx" : ""}">${esc(e.name)}</span>`).join(" ") + " " +
+    r.approx.map((e) => `<span class="big approx">${esc(e.name)} <small>${e.km}</small></span>`).join(" ");
 
   async function run(raw) {
     const input = raw.replace(/[‎‏‪-‮⁦-⁩]/g, "").trim();
@@ -529,6 +536,7 @@
     document.querySelectorAll(".mode").forEach((b) => b.classList.toggle("on", b.dataset.mode === pad.mode));
     const text = pad.mode === "text";
     $("padArea").hidden = text; $("padTop").hidden = text; $("cmdForm").hidden = !text;
+    $("padCard").classList.toggle("pad", !text);
     if (text) return;
     const d = $("display");
     d.className = "display " + pad.mode;
@@ -551,6 +559,8 @@
         return `<button type="button" class="chip${i === 0 ? " top" : ""}" data-name="${esc(n)}">${esc(n)}${ex ? `<small>${ex.km} km</small>` : ""}</button>`;
       }).join("");
     } else sg.innerHTML = "";
+    sg.hidden = pad.stage !== "name";
+    sg.scrollLeft = 0;
   }
 
   function liveNum() {
