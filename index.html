@@ -2,7 +2,15 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050b18">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Länder-km">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <title>Länder-Kilometer</title>
 <style>
   :root {
@@ -38,7 +46,8 @@
   }
   /* Weltkarte im Hintergrund */
   #bgmap { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: .13; }
-  main { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 12px 16px 48px; }
+  main { position: relative; z-index: 1; max-width: 680px; margin: 0 auto;
+    padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(48px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
 
   header.hero { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 10px; }
   #globeWrap { position: relative; width: min(260px, 62vw); aspect-ratio: 1; margin: 6px 0 4px; }
@@ -154,7 +163,7 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v7</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v8</span></p>
     <span id="status">Lade …</span>
   </header>
 
@@ -223,7 +232,7 @@
 
   <div class="card">
     <details id="settings">
-      <summary><span class="ico">⚙️</span> Einstellungen (GitHub-Zugang)</summary>
+      <summary><span class="ico">⚙️</span> Einstellungen (nur zum Speichern)</summary>
       <p class="muted" style="font-size:.9rem;margin:0">
         Damit alle Geräte dieselben Daten haben, liegen sie als <code>data.json</code> in deinem GitHub-Repo.
         Zum <b>Speichern</b> braucht jedes Gerät einmalig ein GitHub-Token (Fine-grained, nur dieses Repo,
@@ -303,52 +312,57 @@
     return btoa(bin);
   };
 
+  // Öffentlich lesen (ohne Token): erst die Datei direkt von der Seite, sonst GitHub-API.
+  async function loadPublic() {
+    try {
+      const r = await fetch(`${FILE}?t=${Date.now()}`, { cache: "no-store" });
+      if (r.ok) { const j = await r.json(); if (Array.isArray(j.entries)) return { entries: j.entries }; }
+    } catch {}
+    const r = await fetch(api(`/contents/${FILE}`) + "?t=" + Date.now(), { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" });
+    if (!r.ok) throw new Error(`GitHub antwortet mit ${r.status}`);
+    const j = await r.json(); sha = j.sha;
+    const parsed = JSON.parse(b64decode(j.content));
+    return { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
+  }
+
   async function load() {
     setStatus("Lade …");
     const ref = cfg.branch ? `?ref=${encodeURIComponent(cfg.branch)}` : "";
     try {
-      const url = api(`/contents/${FILE}${ref}`) + (ref ? "&" : "?") + "t=" + Date.now();
-      let r = await fetch(url, { headers: headers(), cache: "no-store" });
-      let badToken = false;
-      if (r.status === 401 && cfg.token) {
-        // Token ungültig → ohne Token lesen (öffentliches Repo), aber deutlich melden
-        badToken = true;
-        r = await fetch(url, { headers: { Accept: "application/vnd.github+json" }, cache: "no-store" });
-      }
-      if (badToken && r.ok) {
-        const j = await r.json(); sha = j.sha;
-        const parsed = JSON.parse(b64decode(j.content));
-        data = { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
-        setStatus("⚠️ Token ungültig – nur lesen. Bitte neuen Token in den Einstellungen eintragen.");
-        $("settings").open = true;
-        show("GitHub lehnt den Token ab (401). Lesen klappt, Speichern nicht. Öffne unten „Einstellungen“ und füge den Token neu ein.", "err");
-      } else if (r.status === 404) {
-        data = { entries: [] }; sha = null;
-        setStatus(cfg.token ? "Verbunden – noch keine Daten." : "Keine Daten gefunden. Token in den Einstellungen eintragen.");
-      } else if (!r.ok) {
-        throw new Error(r.status === 401 ? "Token ungültig (401)" : `GitHub antwortet mit ${r.status}`);
+      if (!cfg.token) {
+        data = await loadPublic();
+        setStatus(`✓ ${data.entries.length} Länder geladen`);
       } else {
-        const j = await r.json();
-        sha = j.sha;
-        const parsed = JSON.parse(b64decode(j.content));
-        data = { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
-        setStatus(cfg.token ? `Synchronisiert (${data.entries.length} Einträge).` : "Nur lesen – zum Speichern Token eintragen.");
-      }
-      if (badToken) {
-        setStatus("⚠️ Token ungültig – nur lesen. Bitte neuen Token in den Einstellungen eintragen.");
-        $("settings").open = true;
+        const url = api(`/contents/${FILE}${ref}`) + (ref ? "&" : "?") + "t=" + Date.now();
+        const r = await fetch(url, { headers: headers(), cache: "no-store" });
+        if (r.status === 401) {
+          data = await loadPublic();
+          setStatus("⚠️ Token ungültig – Suchen geht, Speichern nicht.");
+          show("GitHub lehnt den Token ab (401). Suchen funktioniert trotzdem. Zum Speichern unter „Einstellungen“ einen neuen Token eintragen.", "err");
+        } else if (r.status === 404) {
+          data = { entries: [] }; sha = null;
+          setStatus("Verbunden – noch keine Daten.");
+        } else if (!r.ok) {
+          throw new Error(`GitHub antwortet mit ${r.status}`);
+        } else {
+          const j = await r.json(); sha = j.sha;
+          const parsed = JSON.parse(b64decode(j.content));
+          data = { entries: Array.isArray(parsed.entries) ? parsed.entries : [] };
+          setStatus(`✓ Synchronisiert (${data.entries.length} Länder)`);
+        }
       }
       store.set("lk_cache", JSON.stringify(data));
     } catch (e) {
       const cached = store.get("lk_cache");
       if (cached) { try { data = JSON.parse(cached); } catch {} }
-      setStatus(`Offline/Fehler: ${e.message}. Zeige zwischengespeicherte Daten.`);
+      setStatus(data.entries.length ? `Offline – gespeicherte Daten (${data.entries.length} Länder)` : `Keine Verbindung (${e.message})`);
     }
     renderList();
   }
 
+
   async function save(message) {
-    if (!cfg.token) throw new Error("Kein Token – bitte in den Einstellungen eintragen.");
+    if (!cfg.token) throw new Error("Zum Speichern braucht dieses Gerät einen GitHub-Token (unten bei „Einstellungen“). Suchen geht auch ohne.");
     const body = {
       message,
       content: b64encode(JSON.stringify(data, null, 2) + "\n"),
@@ -670,7 +684,7 @@
   function showTokenInfo() {
     const t = cfg.token;
     let msg, cls = "muted";
-    if (!t) { msg = "Kein Token gespeichert."; cls = "err"; }
+    if (!t) { msg = "Kein Token – Suchen geht trotzdem. Nur zum Speichern nötig."; }
     else if (t.startsWith("github_pat_")) {
       msg = `Gespeichert: ${t.slice(0, 15)}… (${t.length} Zeichen)`;
       if (t.length < 80) { msg += " – zu kurz! Ein vollständiger Token hat ca. 93 Zeichen. Bitte mit dem Kopieren-Symbol kopieren."; cls = "err"; }
@@ -689,7 +703,11 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   });
 
-  if (!cfg.token) $("settings").open = true;
+  // Sofort mit gespeicherten Daten starten (schnell & offline), dann aktualisieren
+  try { const c = JSON.parse(store.get("lk_cache") || "null"); if (c && Array.isArray(c.entries)) { data = c; renderList(); } } catch {}
+  if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
   load();
 })();
 </script>
