@@ -12,6 +12,7 @@ Die Daten liegen in `data.json` in diesem Repo – dadurch sind sie auf allen Ge
 | `~1234` / `~1234 50` | Länder im Bereich ±20 km (bzw. ±50) |
 | `?fra` | Länder suchen, deren Name „fra“ enthält |
 | `von Japan` | alle Entfernungen von Japan zu den anderen Ländern, gleiche zusammengefasst, nach Anzahl absteigend (Modus „Von Land“) |
+| Modus **🎯 Runde** | ganzes Spiel: Hinweise „geratenes Land + km“ sammeln (erster: China) → alle Länder, die zu allen Hinweisen passen (±2,5 km), plus bester nächster Tipp. Simuliert für alle 196 Lösungen: immer in 2–3 Versuchen (Ø 2,1). |
 | `liste` / `#` | alle Einträge |
 | `löschen Frankreich` | Eintrag entfernen (mit Rückfrage) |
 | `neu` | Daten neu von GitHub laden |

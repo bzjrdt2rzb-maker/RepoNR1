@@ -151,6 +151,24 @@
   .kbd .row button.wide { flex: 1 1 auto; }
   .kbd .row button.space { flex: 3 1 auto; }
   [hidden] { display: none !important; }
+  .mode[data-mode=round].on { background: linear-gradient(135deg, #ff7a9a, #f5b84b); color: #1a0710; }
+  .modes { flex-wrap: wrap; }
+  .mode { min-width: 18%; }
+  #padCard.pad.round #out { height: 168px; }
+  .rhead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .hint { display: inline-flex; align-items: center; gap: 6px; padding: 3px 4px 3px 10px; border-radius: 999px; font-size: .9rem;
+    background: rgba(255, 122, 154, .14); border: 1px solid rgba(255, 122, 154, .4); }
+  .hint button { padding: 0 8px; height: 24px; font-size: .8rem; border-radius: 999px; background: rgba(255,255,255,.08); color: var(--text); }
+  .rhead .newr { margin-left: auto; padding: 6px 12px; font-size: .88rem; }
+  .tip { display: inline-block; margin: 2px 6px 4px 0; padding: 6px 12px; border-radius: 999px; font-weight: 700;
+    background: rgba(255, 122, 154, .16); border: 1px solid #ff7a9a; color: #ffd0db; }
+  .tip small { font-weight: 400; color: var(--muted); margin-left: 4px; }
+  .rsec { font-size: .82rem; color: var(--muted); margin: 6px 0 2px; }
+  .rsec .tip { margin: 0 0 0 4px; padding: 3px 10px; }
+  .rc { display: inline-block; margin: 2px 4px 2px 0; padding: 3px 10px; border-radius: 999px; font-size: .92rem; font-weight: 600;
+    background: rgba(245, 184, 75, .12); color: var(--accent2); border: 1px solid rgba(245, 184, 75, .35); }
+  .rc.approx { background: rgba(143, 211, 255, .08); color: #bfe3ff; border-color: rgba(143, 211, 255, .3); }
+  .display.round .sign { width: auto; }
   .mode[data-mode=from].on { background: linear-gradient(135deg, #8f7bff, #5a8cff); }
   .display.from .sign { color: #9aa8ff; width: auto; }
   #padCard.fromres #out { height: auto; max-height: 58vh; min-height: 120px; overflow-y: auto; }
@@ -172,7 +190,7 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v10</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v11</span></p>
     <span id="status">Lade …</span>
   </header>
 
@@ -181,6 +199,7 @@
       <button type="button" class="mode" data-mode="plus">＋ Speichern</button>
       <button type="button" class="mode" data-mode="minus">− Suchen</button>
       <button type="button" class="mode" data-mode="from">🌍 Von Land</button>
+      <button type="button" class="mode" data-mode="round">🎯 Runde</button>
       <button type="button" class="mode" data-mode="text">⌨ Befehl</button>
     </div>
     <button type="button" class="secondary" id="originPill" hidden style="width:100%;margin-bottom:8px"></button>
@@ -205,6 +224,7 @@
       <p style="margin:0 0 10px;font-size:.92rem">
         <b>＋ Speichern:</b> Kilometer auf dem Zahlenfeld tippen → <b>Weiter</b> (oder Leertaste/Enter) → Land auf der Tastatur tippen → Vorschlag antippen oder <b>↵</b> (nimmt den markierten Vorschlag).<br>
         <b>− Suchen:</b> Kilometer tippen – Treffer erscheinen sofort. <b>↵</b> leert das Feld für die nächste Zahl.<br>
+        <b>🎯 Runde:</b> Für ein ganzes Spiel. Ersten Tipp (China) und angezeigte km eingeben → <b>Hinweis ✓</b>. Die App zeigt alle Länder, die zu <i>allen</i> Hinweisen passen, und schlägt den besten nächsten Tipp vor (⭐). Tipp antippen, in Globle raten, dessen km eingeben – meist bleibt nach 2–3 Tipps nur ein Land. <b>↶</b> nimmt den letzten Hinweis zurück, <b>Neue Runde</b> fängt von vorn an.<br>
         <b>🌍 Von Land:</b> Startland wählen (Tastatur, Vorschlag antippen) → alle Entfernungen von dort zu den anderen Ländern, gleiche Entfernungen zusammengefasst und absteigend nach Anzahl der Länder sortiert. Antippen einer Zeile markiert die Länder auf dem Globus.<br>
         <b>⌨ Befehl:</b> Freie Eingabe für alle Befehle unten.<br>
         Der gewählte Modus bleibt, bis du ihn änderst.<br>
@@ -569,7 +589,7 @@
   }
   const titleCase = (t) => t.trim().replace(/\s+/g, " ").replace(/(^|[\s-])([a-z])/g, (m0, a, b) => a + b.toUpperCase());
 
-  const pad = { mode: ["plus", "minus", "from", "text"].includes(store.get("lk_mode")) ? store.get("lk_mode") : "plus", stage: "num", km: "", name: "" };
+  const pad = { mode: ["plus", "minus", "from", "round", "text"].includes(store.get("lk_mode")) ? store.get("lk_mode") : "plus", stage: "num", km: "", name: "" };
   if (pad.mode === "from") pad.stage = "name";
 
   // --- Entfernungsmatrix (distances.json): alle Länder untereinander, in 5-km-Schritten ---
@@ -615,6 +635,105 @@
     r.approx.map((e) => `<span class="big approx">${esc(e.name)} <small>${e.km}</small></span>`).join(" ");
   const backToPick = () => { pad.stage = "name"; pad.name = ""; show(""); renderPad(); };
 
+  // ================= 🎯 Runde: mehrere Hinweise kombinieren =================
+  let round = { hints: [], guess: "China" };
+  try { const r = JSON.parse(store.get("lk_round") || "null"); if (r && Array.isArray(r.hints)) round = r; } catch {}
+  const saveRound = () => store.set("lk_round", JSON.stringify(round));
+  let roundTips = [];
+  if (pad.mode === "round" && !round.guess) pad.stage = "name";
+
+  // Globle rundet auf 5 km → ein Land passt, wenn die echte Entfernung höchstens 2,5 km vom Hinweis abweicht.
+  const STRICT = 2.6, LOOSE = 10;
+  function roundSolve(D, hints) {
+    const hi = hints.map((h) => ({ i: D.idx.get(norm(h.name)), km: h.km })).filter((h) => h.i !== undefined);
+    const guessed = new Set(hi.map((h) => h.i));
+    const rows = [];
+    D.names.forEach((n, j) => {
+      if (guessed.has(j)) return;
+      let dev = 0;
+      for (const h of hi) dev = Math.max(dev, Math.abs(D.m[h.i][j] / 10 - h.km));
+      rows.push({ j, name: n, dev });
+    });
+    const strict = rows.filter((r) => r.dev <= STRICT).sort((a, b) => a.name.localeCompare(b.name, "en"));
+    const loose = strict.length ? [] : rows.filter((r) => r.dev <= LOOSE).sort((a, b) => a.dev - b.dev);
+    return { strict, loose, cands: strict.length ? strict : loose, guessed };
+  }
+  // Bester nächster Tipp: das Land, nach dessen Entfernung im Schnitt am wenigsten Kandidaten übrig bleiben.
+  function bestTips(D, cands, guessed, k = 3) {
+    const n = cands.length;
+    if (n <= 1) return cands.map((c) => ({ name: c.name, exp: 0, win: true }));
+    const C = cands.map((c) => c.j), inC = new Set(C);
+    const res = [];
+    for (let g = 0; g < D.names.length; g++) {
+      if (guessed.has(g)) continue;
+      const row = D.m[g];
+      let sum = 0;
+      for (const c of C) {
+        if (c === g) continue;               // richtig geraten → 0 übrig
+        let same = 0;
+        for (const c2 of C) if (c2 !== g && Math.abs(row[c] - row[c2]) <= 50) same++;
+        sum += same;
+      }
+      res.push({ name: D.names[g], exp: sum / n, win: inC.has(g) });
+    }
+    res.sort((a, b) => a.exp - b.exp || (b.win - a.win) || a.name.localeCompare(b.name, "en"));
+    return res.slice(0, k);
+  }
+  const fmtExp = (x) => x.toFixed(1).replace(".", ",");
+
+  async function renderRound(previewKm) {
+    let D;
+    try { D = await loadDist(); } catch (e) { return show(esc(e.message), "err"); }
+    if (pad.mode !== "round") return;
+    const hints = previewKm != null && round.guess ? [...round.hints, { name: round.guess, km: previewKm }] : round.hints;
+    const head = `<div class="rhead">` +
+      (round.hints.length ? round.hints.map((h, i) => `<span class="hint">${esc(h.name)} <b>${h.km}</b><button type="button" data-delhint="${i}" aria-label="Hinweis entfernen">✕</button></span>`).join("") : `<span class="muted" style="font-size:.88rem">Noch keine Hinweise</span>`) +
+      `<button type="button" class="secondary newr" data-newround="1">Neue Runde</button></div>`;
+    if (!hints.length) { roundTips = []; window.globeFocus?.(["China"]); return show(head + `<div class="muted">Rate in Globle <b>China</b> und tippe die angezeigten km ein.</div>`); }
+    const r = roundSolve(D, hints);
+    roundTips = bestTips(D, r.cands, r.guessed);
+    window.globeFocus?.(r.cands.map((c) => c.name));
+    let body = "";
+    if (!r.cands.length) body = `<div class="err">Kein Land passt zu allen Hinweisen. Vertippt? Mit ✕ einen Hinweis entfernen.</div>`;
+    else {
+      if (r.cands.length === 1) body += `<div class="rsec">🎉 Lösung</div><span class="big">${esc(r.cands[0].name)}</span>`;
+      else {
+        const t = roundTips[0];
+        body += `<div class="rsec">⭐ ${previewKm != null ? "Danach bester" : "Bester nächster"} Tipp: <span class="tip">${esc(t.name)}<small>${t.win ? "kann selbst die Lösung sein · " : ""}danach ≈ ${fmtExp(t.exp)} übrig</small></span></div>`;
+        body += `<div class="rsec">${r.cands.length} ${r.strict.length ? "passende Länder" : "Länder passen nur ungefähr (±10 km)"}</div>` +
+          r.cands.map((c) => `<span class="rc${r.strict.length ? "" : " approx"}">${esc(c.name)}</span>`).join("");
+      }
+    }
+    show(head + body);
+  }
+  function roundAddHint() {
+    if (!pad.km || !round.guess) return;
+    round.hints = round.hints.filter((h) => norm(h.name) !== norm(round.guess));
+    round.hints.push({ name: round.guess, km: parseInt(pad.km, 10) });
+    history.push(`🎯 ${round.guess} ${pad.km}`); hIdx = history.length;
+    histBox.innerHTML = history.slice(-5).reverse().map((h) => `<div>› ${esc(h)}</div>`).join("");
+    round.guess = null; saveRound();
+    pad.km = ""; pad.stage = "name"; pad.name = "";
+    renderPad(); renderRound();
+  }
+  function roundPick(name) {
+    name = (name || "").trim(); if (!name) return;
+    round.guess = name; saveRound();
+    pad.stage = "num"; pad.km = ""; pad.name = "";
+    renderPad(); renderRound();
+  }
+  function roundUndo() {
+    const last = round.hints.pop();
+    if (last) { round.guess = last.name; pad.km = String(last.km); }
+    saveRound(); pad.stage = "num"; pad.name = "";
+    renderPad(); renderRound(last ? last.km : null);
+  }
+  function roundNew() {
+    round = { hints: [], guess: "China" }; saveRound();
+    pad.stage = "num"; pad.km = ""; pad.name = "";
+    renderPad(); renderRound();
+  }
+
   function renderPad() {
     document.querySelectorAll(".mode").forEach((b) => b.classList.toggle("on", b.dataset.mode === pad.mode));
     const text = pad.mode === "text";
@@ -622,12 +741,17 @@
     $("padArea").hidden = text || res; $("padTop").hidden = text; $("cmdForm").hidden = !text;
     $("padCard").classList.toggle("pad", !text);
     $("padCard").classList.toggle("fromres", res);
+    $("padCard").classList.toggle("round", pad.mode === "round");
     if (text) return;
     const d = $("display");
     d.className = "display " + pad.mode;
     const sign = pad.mode === "plus" ? "+" : "−";
     const op = $("originPill"); op.hidden = pad.mode !== "minus"; op.textContent = `Suche von: ${origin} ✎`;
-    if (pad.mode === "from") {
+    if (pad.mode === "round") {
+      d.innerHTML = pad.stage === "num"
+        ? `<span class="sign">🎯</span><span class="nm">${esc(round.guess || "?")}</span><span class="km">${pad.km ? "→ " + pad.km : ""}</span>` + (pad.km ? "" : `<span class="ph">km eingeben</span>`) + `<span class="caret"></span>`
+        : `<span class="sign">🎯</span>` + (pad.name ? `<span class="nm">${esc(pad.name)}</span>` : `<span class="ph">Nächster Tipp – ⭐ antippen oder tippen</span>`) + `<span class="caret"></span>`;
+    } else if (pad.mode === "from") {
       d.innerHTML = res
         ? `<span class="sign">🌍 Von</span><span class="nm">${esc(pad.start)}</span>`
         : `<span class="sign">🌍 Von</span>` + (pad.name ? `<span class="nm">${esc(pad.name)}</span>` : `<span class="ph">Startland eingeben</span>`) + `<span class="caret"></span>`;
@@ -639,12 +763,16 @@
     $("numpad").hidden = pad.mode === "from" || pad.stage !== "num";
     $("kbd").hidden = pad.stage !== "name";
     const enterBtn = $("kbd").querySelector('[data-k=enter]');
-    if (enterBtn) enterBtn.textContent = pad.mode === "from" ? "↵ Los" : "↵ Speichern";
+    if (enterBtn) enterBtn.textContent = pad.mode === "from" ? "↵ Los" : pad.mode === "round" ? "↵ Wählen" : "↵ Speichern";
+    const tonumBtn = $("kbd").querySelector('[data-k=tonum]');
+    if (tonumBtn) tonumBtn.textContent = pad.mode === "round" ? "↶ Zurück" : "← km";
     const act = $("numpad").querySelector(".act");
-    if (act) act.textContent = pad.mode === "plus" ? "Weiter →" : "↵ Neu";
+    if (act) act.textContent = pad.mode === "plus" ? "Weiter →" : pad.mode === "round" ? "Hinweis ✓" : "↵ Neu";
     // Vorschläge
     const sg = $("suggest");
-    if (pad.stage === "name") {
+    if (pad.stage === "name" && pad.mode === "round" && !pad.name) {
+      sg.innerHTML = roundTips.map((t, i) => `<button type="button" class="chip${i === 0 ? " top" : ""}" data-name="${esc(t.name)}">⭐ ${esc(t.name)}</button>`).join("");
+    } else if (pad.stage === "name") {
       const list = suggestions(pad.name);
       sg.innerHTML = list.map((n, i) => {
         const ex = pad.mode !== "from" && data.entries.find((e) => norm(e.name) === norm(n));
@@ -656,6 +784,7 @@
   }
 
   function liveNum() {
+    if (pad.mode === "round") { renderRound(pad.km ? parseInt(pad.km, 10) : null); return; }
     if (!pad.km) { show(""); return; }
     const km = parseInt(pad.km, 10);
     const hits = data.entries.filter((e) => e.km === km);
@@ -692,6 +821,7 @@
     if (pad.stage !== "name") return;
     const list = suggestions(pad.name);
     if (pad.mode === "from") return pickFrom(list[0]);
+    if (pad.mode === "round") return roundPick(pad.name ? list[0] : roundTips[0]?.name);
     savePlus(list[0] || titleCase(pad.name));
   }
 
@@ -703,10 +833,12 @@
       else if (k === "back") { pad.km = pad.km.slice(0, -1); liveNum(); }
       else if (k === "next") {
         if (!pad.km) return;
+        if (pad.mode === "round") return roundAddHint();
         if (pad.mode === "plus") { pad.stage = "name"; pad.name = ""; }
         else { history.push(`-${pad.km}`); hIdx = history.length; histBox.innerHTML = history.slice(-5).reverse().map((h) => `<div>› ${esc(h)}</div>`).join(""); pad.km = ""; }
       }
     } else {
+      if (pad.mode === "round" && (k === "tonum" || (k === "back" && !pad.name))) return roundUndo();
       if (k === "back") { if (pad.name) pad.name = pad.name.slice(0, -1); else if (pad.mode !== "from") pad.stage = "num"; }
       else if (k === "tonum") { if (pad.mode !== "from") pad.stage = "num"; }
       else if (k === "enter") return enterName();
@@ -731,18 +863,22 @@
     const b = ev.target.closest("button"); if (!b) return;
     ev.preventDefault();
     if (b.dataset.k) key(b.dataset.k);
-    else if (b.dataset.name) (pad.mode === "from" ? pickFrom : savePlus)(b.dataset.name);
+    else if (b.dataset.name) (pad.mode === "from" ? pickFrom : pad.mode === "round" ? roundPick : savePlus)(b.dataset.name);
   };
   $("numpad").addEventListener("click", fire);
   $("kbd").addEventListener("click", fire);
   $("suggest").addEventListener("click", fire);
   const setMode = (m) => {
     pad.mode = m; store.set("lk_mode", m);
-    pad.stage = m === "from" ? "name" : "num"; pad.km = ""; pad.name = ""; show(""); renderPad();
+    pad.stage = m === "from" || (m === "round" && !round.guess) ? "name" : "num"; pad.km = ""; pad.name = ""; show(""); renderPad();
+    if (m === "round") renderRound();
     if (m === "text") $("cmd").focus();
   };
   $("originPill").addEventListener("click", () => setMode("from"));
   out.addEventListener("click", (ev) => {
+    if (ev.target.closest("[data-newround]")) return roundNew();
+    const dh = ev.target.closest("[data-delhint]");
+    if (dh) { round.hints.splice(+dh.dataset.delhint, 1); saveRound(); return renderRound(); }
     if (ev.target.closest("[data-search]")) return setMode("minus");
     if (ev.target.closest("[data-back]")) return backToPick();
     const g = ev.target.closest(".grp");
@@ -750,8 +886,9 @@
   });
   document.querySelectorAll(".mode").forEach((b) => b.addEventListener("click", () => {
     pad.mode = b.dataset.mode; store.set("lk_mode", pad.mode);
-    pad.stage = pad.mode === "from" ? "name" : "num"; pad.km = ""; pad.name = ""; show("");
+    pad.stage = pad.mode === "from" || (pad.mode === "round" && !round.guess) ? "name" : "num"; pad.km = ""; pad.name = ""; show("");
     renderPad();
+    if (pad.mode === "round") renderRound();
     if (pad.mode === "text") $("cmd").focus();
   }));
 
@@ -778,6 +915,7 @@
   });
 
   renderPad();
+  if (pad.mode === "round") renderRound();
 
   // Einstellungen übernehmen (auch automatisch, ohne „Speichern & laden“ zu drücken)
   function applySettings() {
