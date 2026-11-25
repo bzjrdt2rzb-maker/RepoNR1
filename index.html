@@ -172,7 +172,7 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v9</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v10</span></p>
     <span id="status">Lade …</span>
   </header>
 
@@ -183,6 +183,7 @@
       <button type="button" class="mode" data-mode="from">🌍 Von Land</button>
       <button type="button" class="mode" data-mode="text">⌨ Befehl</button>
     </div>
+    <button type="button" class="secondary" id="originPill" hidden style="width:100%;margin-bottom:8px"></button>
     <div id="padTop"><div class="display" id="display"></div></div>
     <form id="cmdForm" autocomplete="off" hidden>
       <input type="text" id="cmd" placeholder="z. B. liste, ?fra, ~1234, umbenennen A > B"
@@ -214,7 +215,7 @@
         <tr><td><code>+1234 Frankreich</code><br><code>+1234,Frankreich</code></td>
             <td>Speichert das Land mit 1234 km. Gibt es das Land schon, wird nur die Kilometerzahl aktualisiert (Groß-/Kleinschreibung egal).</td></tr>
         <tr><td><code>-1234</code></td>
-            <td>Zeigt alle Länder mit genau 1234 km – plus berechnete Länder (≈) im Umkreis von ±15 km.</td></tr>
+            <td>Zeigt alle Länder mit genau 1234 km – plus berechnete Länder (≈) im Umkreis von ±15 km. Die Suche gilt vom gewählten Startland (Standard China; ändern über „Von Land“ oder von Japan).</td></tr>
         <tr><td><code>~1234</code><br><code>~1234 50</code></td>
             <td>Zeigt alle Länder im Bereich 1234 ± 20 km (oder ± der zweiten Zahl, hier 50), nach Abstand sortiert.</td></tr>
         <tr><td><code>?Frankreich</code><br><code>?fra</code></td>
@@ -440,6 +441,11 @@
     // -1234
     if ((m = input.match(/^-\s*(\d+)$/))) {
       const km = parseInt(m[1], 10);
+      if (origin !== "China") {
+        const r = await lookupFrom(km);
+        if (r && (r.exact.length || r.approx.length)) { window.globeFocus?.([...r.exact, ...r.approx].map((e) => e.name)); return show(fmtFrom(r)); }
+        return show(`Kein Land mit ${km} km von ${esc(origin)}.`, "err");
+      }
       const r = lookup(km);
       if (r.all.length) { window.globeFocus?.(r.all.map((e) => e.name)); return show(fmtLookup(r, km)); }
       const near = data.entries.filter((e) => Math.abs(e.km - km) <= 20).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
@@ -573,7 +579,7 @@
     const r = await fetch("distances.json");
     if (!r.ok) throw new Error(`Entfernungstabelle nicht ladbar (${r.status}).`);
     const j = await r.json();
-    dist = { names: j.names, step: j.step, m: j.matrix, idx: new Map(j.names.map((n, i) => [norm(n), i])) };
+    dist = { names: j.names, m: j.matrix, idx: new Map(j.names.map((n, i) => [norm(n), i])) };
     return dist;
   }
   async function showFrom(start) {
@@ -581,17 +587,32 @@
     const i = D.idx.get(norm(start));
     if (i === undefined) return show(`Für „${esc(start)}“ gibt es keine Entfernungen.`, "err");
     const groups = new Map();
-    D.names.forEach((n, j) => { if (j === i) return; const km = D.m[i][j] * D.step; (groups.get(km) || groups.set(km, []).get(km)).push(n); });
+    D.names.forEach((n, j) => { if (j === i) return; const km = Math.round(D.m[i][j] / 10 / 5) * 5; (groups.get(km) || groups.set(km, []).get(km)).push(n); });
     const rows = [...groups].map(([km, names]) => ({ km, names: names.sort((a, b) => a.localeCompare(b, "en")) }))
       .sort((a, b) => b.names.length - a.names.length || a.km - b.km);
-    pad.start = D.names[i]; pad.stage = "result"; pad.name = "";
+    setOrigin(D.names[i]); pad.start = D.names[i]; pad.stage = "result"; pad.name = "";
     renderPad();
     window.globeFocus?.([D.names[i]]);
     show(`<div class="fhead"><span>Von <b>${esc(D.names[i])}</b> · ${rows.length} verschiedene Entfernungen</span>` +
-      `<button type="button" class="secondary" data-back="1">← Anderes Land</button></div>` +
+      `<span style="display:flex;gap:6px"><button type="button" class="secondary" data-back="1">← Anderes Land</button><button type="button" data-search="1">− Suchen von hier</button></span></div>` +
       rows.map((r) => `<button type="button" class="grp" data-names="${esc(r.names.join("|"))}"><span class="gk">${r.km} km</span><span class="gc">${r.names.length}×</span>${r.names.map(esc).join(", ")}</button>`).join(""), "");
     out.scrollTop = 0;
   }
+  // Startland für „− Suchen“ (Standard: China)
+  let origin = store.get("lk_origin", "China") || "China";
+  const setOrigin = (n) => { origin = n; store.set("lk_origin", n); };
+  // Treffer für km vom gewählten Startland aus (exakte Matrix, Anzeige auf 5 km gerundet wie Globle)
+  async function lookupFrom(km) {
+    const D = await loadDist(); const i = D.idx.get(norm(origin));
+    if (i === undefined) return null;
+    const rows = D.names.map((n, j) => ({ name: n, d: D.m[i][j] / 10, j })).filter((r) => r.j !== i);
+    for (const r of rows) r.km = Math.round(r.d / 5) * 5;
+    const exact = rows.filter((r) => r.km === km);
+    const approx = rows.filter((r) => r.km !== km && Math.abs(r.km - km) <= 10).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
+    return { exact, approx };
+  }
+  const fmtFrom = (r) => r.exact.map((e) => `<span class="big">${esc(e.name)}</span>`).join(" ") + " " +
+    r.approx.map((e) => `<span class="big approx">${esc(e.name)} <small>${e.km}</small></span>`).join(" ");
   const backToPick = () => { pad.stage = "name"; pad.name = ""; show(""); renderPad(); };
 
   function renderPad() {
@@ -605,6 +626,7 @@
     const d = $("display");
     d.className = "display " + pad.mode;
     const sign = pad.mode === "plus" ? "+" : "−";
+    const op = $("originPill"); op.hidden = pad.mode !== "minus"; op.textContent = `Suche von: ${origin} ✎`;
     if (pad.mode === "from") {
       d.innerHTML = res
         ? `<span class="sign">🌍 Von</span><span class="nm">${esc(pad.start)}</span>`
@@ -637,6 +659,14 @@
     if (!pad.km) { show(""); return; }
     const km = parseInt(pad.km, 10);
     const hits = data.entries.filter((e) => e.km === km);
+    if (pad.mode === "minus" && origin !== "China") {
+      lookupFrom(km).then((r) => {
+        if (!r || pad.km !== String(km)) return;
+        if (r.exact.length || r.approx.length) { window.globeFocus?.([...r.exact, ...r.approx].map((e) => e.name)); show(fmtFrom(r)); }
+        else show(`<span class="muted">Kein Land mit ${km} km von ${esc(origin)}.</span>`);
+      }).catch((e) => show(esc(e.message), "err"));
+      return;
+    }
     if (pad.mode === "minus") {
       const r = lookup(km);
       if (r.all.length) { window.globeFocus?.(r.all.map((e) => e.name)); show(fmtLookup(r, km)); }
@@ -706,7 +736,14 @@
   $("numpad").addEventListener("click", fire);
   $("kbd").addEventListener("click", fire);
   $("suggest").addEventListener("click", fire);
+  const setMode = (m) => {
+    pad.mode = m; store.set("lk_mode", m);
+    pad.stage = m === "from" ? "name" : "num"; pad.km = ""; pad.name = ""; show(""); renderPad();
+    if (m === "text") $("cmd").focus();
+  };
+  $("originPill").addEventListener("click", () => setMode("from"));
   out.addEventListener("click", (ev) => {
+    if (ev.target.closest("[data-search]")) return setMode("minus");
     if (ev.target.closest("[data-back]")) return backToPick();
     const g = ev.target.closest(".grp");
     if (g) window.globeFocus?.(g.dataset.names.split("|"));

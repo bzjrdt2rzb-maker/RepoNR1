@@ -31,4 +31,4 @@ Die Daten liegen in `data.json` in diesem Repo – dadurch sind sie auf allen Ge
 
 ## Entfernungsmatrix
 
-`distances.json` enthält die Entfernung zwischen allen 197 Ländern (Methode wie Globle, auf 5 km gerundet; Matrixwerte in 5-km-Schritten, also `Wert × 5` = km).
+`distances.json` enthält die Entfernung zwischen allen 197 Ländern (Methode wie Globle; Matrixwerte in 0,1 km, also `Wert / 10` = km, ungerundet. Die App rundet beim Anzeigen und Suchen auf 5 km). Die Suche („− Suchen“) gilt vom gewählten Startland (Standard China).
