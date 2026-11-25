@@ -23,7 +23,7 @@
     {
       "id": 5,
       "km": 5245,
-      "name": "Luxembourh"
+      "name": "Luxembourg"
     },
     {
       "id": 6,
@@ -33,27 +33,17 @@
     {
       "id": 7,
       "km": 12410,
-      "name": "St. Vincent and grenadiers"
+      "name": "Saint Vincent and the Grenadines"
     },
     {
       "id": 8,
       "km": 5610,
-      "name": "St. Is. Bzw Solomon Islands"
+      "name": "Solomon Islands"
     },
     {
       "id": 9,
       "km": 105,
       "name": "Bangladesh"
-    },
-    {
-      "id": 10,
-      "km": 8635,
-      "name": "Sudan"
-    },
-    {
-      "id": 11,
-      "km": 8635,
-      "name": "Somalia"
     },
     {
       "id": 12,
@@ -69,6 +59,1158 @@
       "id": 14,
       "km": 6790,
       "name": "Vanuatu"
+    },
+    {
+      "id": 15,
+      "km": 0,
+      "name": "Afghanistan",
+      "est": true
+    },
+    {
+      "id": 16,
+      "km": 4410,
+      "name": "Albania",
+      "est": true
+    },
+    {
+      "id": 17,
+      "km": 5570,
+      "name": "Algeria",
+      "est": true
+    },
+    {
+      "id": 18,
+      "km": 5855,
+      "name": "Andorra",
+      "est": true
+    },
+    {
+      "id": 19,
+      "km": 7370,
+      "name": "Angola",
+      "est": true
+    },
+    {
+      "id": 20,
+      "km": 11985,
+      "name": "Antigua and Barbuda",
+      "est": true
+    },
+    {
+      "id": 21,
+      "km": 14955,
+      "name": "Argentina",
+      "est": true
+    },
+    {
+      "id": 22,
+      "km": 2320,
+      "name": "Armenia",
+      "est": true
+    },
+    {
+      "id": 23,
+      "km": 3985,
+      "name": "Australia",
+      "est": true
+    },
+    {
+      "id": 24,
+      "km": 4530,
+      "name": "Austria",
+      "est": true
+    },
+    {
+      "id": 25,
+      "km": 1985,
+      "name": "Azerbaijan",
+      "est": true
+    },
+    {
+      "id": 26,
+      "km": 10840,
+      "name": "Bahamas",
+      "est": true
+    },
+    {
+      "id": 27,
+      "km": 2550,
+      "name": "Bahrain",
+      "est": true
+    },
+    {
+      "id": 28,
+      "km": 12345,
+      "name": "Barbados",
+      "est": true
+    },
+    {
+      "id": 29,
+      "km": 3420,
+      "name": "Belarus",
+      "est": true
+    },
+    {
+      "id": 30,
+      "km": 5235,
+      "name": "Belgium",
+      "est": true
+    },
+    {
+      "id": 31,
+      "km": 11425,
+      "name": "Belize",
+      "est": true
+    },
+    {
+      "id": 32,
+      "km": 7480,
+      "name": "Benin",
+      "est": true
+    },
+    {
+      "id": 33,
+      "km": 0,
+      "name": "Bhutan",
+      "est": true
+    },
+    {
+      "id": 34,
+      "km": 14735,
+      "name": "Bolivia",
+      "est": true
+    },
+    {
+      "id": 35,
+      "km": 4435,
+      "name": "Bosnia and Herzegovina",
+      "est": true
+    },
+    {
+      "id": 36,
+      "km": 12020,
+      "name": "Brazil",
+      "est": true
+    },
+    {
+      "id": 37,
+      "km": 1580,
+      "name": "Brunei",
+      "est": true
+    },
+    {
+      "id": 38,
+      "km": 3735,
+      "name": "Bulgaria",
+      "est": true
+    },
+    {
+      "id": 39,
+      "km": 7540,
+      "name": "Burkina Faso",
+      "est": true
+    },
+    {
+      "id": 40,
+      "km": 6310,
+      "name": "Burundi",
+      "est": true
+    },
+    {
+      "id": 41,
+      "km": 440,
+      "name": "Cambodia",
+      "est": true
+    },
+    {
+      "id": 42,
+      "km": 6460,
+      "name": "Cameroon",
+      "est": true
+    },
+    {
+      "id": 43,
+      "km": 4735,
+      "name": "Canada",
+      "est": true
+    },
+    {
+      "id": 44,
+      "km": 9380,
+      "name": "Cape Verde",
+      "est": true
+    },
+    {
+      "id": 45,
+      "km": 5900,
+      "name": "Central African Republic",
+      "est": true
+    },
+    {
+      "id": 46,
+      "km": 14105,
+      "name": "Chile",
+      "est": true
+    },
+    {
+      "id": 47,
+      "km": 12550,
+      "name": "Colombia",
+      "est": true
+    },
+    {
+      "id": 48,
+      "km": 6060,
+      "name": "Comoros",
+      "est": true
+    },
+    {
+      "id": 49,
+      "km": 12295,
+      "name": "Costa Rica",
+      "est": true
+    },
+    {
+      "id": 50,
+      "km": 4420,
+      "name": "Croatia",
+      "est": true
+    },
+    {
+      "id": 51,
+      "km": 11125,
+      "name": "Cuba",
+      "est": true
+    },
+    {
+      "id": 52,
+      "km": 3445,
+      "name": "Cyprus",
+      "est": true
+    },
+    {
+      "id": 53,
+      "km": 4380,
+      "name": "Czechia",
+      "est": true
+    },
+    {
+      "id": 54,
+      "km": 5800,
+      "name": "Democratic Republic of the Congo",
+      "est": true
+    },
+    {
+      "id": 55,
+      "km": 4570,
+      "name": "Denmark",
+      "est": true
+    },
+    {
+      "id": 56,
+      "km": 4130,
+      "name": "Djibouti",
+      "est": true
+    },
+    {
+      "id": 57,
+      "km": 12185,
+      "name": "Dominica",
+      "est": true
+    },
+    {
+      "id": 58,
+      "km": 11735,
+      "name": "Dominican Republic",
+      "est": true
+    },
+    {
+      "id": 59,
+      "km": 13065,
+      "name": "Ecuador",
+      "est": true
+    },
+    {
+      "id": 60,
+      "km": 3655,
+      "name": "Egypt",
+      "est": true
+    },
+    {
+      "id": 61,
+      "km": 11805,
+      "name": "El Salvador",
+      "est": true
+    },
+    {
+      "id": 62,
+      "km": 7500,
+      "name": "Equatorial Guinea",
+      "est": true
+    },
+    {
+      "id": 63,
+      "km": 4085,
+      "name": "Eritrea",
+      "est": true
+    },
+    {
+      "id": 64,
+      "km": 3765,
+      "name": "Estonia",
+      "est": true
+    },
+    {
+      "id": 65,
+      "km": 8085,
+      "name": "Eswatini",
+      "est": true
+    },
+    {
+      "id": 66,
+      "km": 4110,
+      "name": "Ethiopia",
+      "est": true
+    },
+    {
+      "id": 67,
+      "km": 15855,
+      "name": "Falkland Islands",
+      "est": true
+    },
+    {
+      "id": 68,
+      "km": 7495,
+      "name": "Fiji",
+      "est": true
+    },
+    {
+      "id": 69,
+      "km": 3590,
+      "name": "Finland",
+      "est": true
+    },
+    {
+      "id": 70,
+      "km": 5155,
+      "name": "France",
+      "est": true
+    },
+    {
+      "id": 71,
+      "km": 7320,
+      "name": "Gabon",
+      "est": true
+    },
+    {
+      "id": 72,
+      "km": 8860,
+      "name": "Gambia",
+      "est": true
+    },
+    {
+      "id": 73,
+      "km": 2285,
+      "name": "Georgia",
+      "est": true
+    },
+    {
+      "id": 74,
+      "km": 4620,
+      "name": "Germany",
+      "est": true
+    },
+    {
+      "id": 75,
+      "km": 7835,
+      "name": "Ghana",
+      "est": true
+    },
+    {
+      "id": 76,
+      "km": 3940,
+      "name": "Greece",
+      "est": true
+    },
+    {
+      "id": 77,
+      "km": 4705,
+      "name": "Greenland",
+      "est": true
+    },
+    {
+      "id": 78,
+      "km": 12545,
+      "name": "Grenada",
+      "est": true
+    },
+    {
+      "id": 79,
+      "km": 11400,
+      "name": "Guatemala",
+      "est": true
+    },
+    {
+      "id": 80,
+      "km": 8520,
+      "name": "Guinea",
+      "est": true
+    },
+    {
+      "id": 81,
+      "km": 8905,
+      "name": "Guinea-Bissau",
+      "est": true
+    },
+    {
+      "id": 82,
+      "km": 12840,
+      "name": "Guyana",
+      "est": true
+    },
+    {
+      "id": 83,
+      "km": 11690,
+      "name": "Haiti",
+      "est": true
+    },
+    {
+      "id": 84,
+      "km": 11715,
+      "name": "Honduras",
+      "est": true
+    },
+    {
+      "id": 85,
+      "km": 0,
+      "name": "Hong Kong",
+      "est": true
+    },
+    {
+      "id": 86,
+      "km": 4110,
+      "name": "Hungary",
+      "est": true
+    },
+    {
+      "id": 87,
+      "km": 5585,
+      "name": "Iceland",
+      "est": true
+    },
+    {
+      "id": 88,
+      "km": 0,
+      "name": "India",
+      "est": true
+    },
+    {
+      "id": 89,
+      "km": 1565,
+      "name": "Indonesia",
+      "est": true
+    },
+    {
+      "id": 90,
+      "km": 1130,
+      "name": "Iran",
+      "est": true
+    },
+    {
+      "id": 91,
+      "km": 2435,
+      "name": "Iraq",
+      "est": true
+    },
+    {
+      "id": 92,
+      "km": 5895,
+      "name": "Ireland",
+      "est": true
+    },
+    {
+      "id": 93,
+      "km": 3420,
+      "name": "Israel",
+      "est": true
+    },
+    {
+      "id": 94,
+      "km": 4640,
+      "name": "Italy",
+      "est": true
+    },
+    {
+      "id": 95,
+      "km": 8175,
+      "name": "Ivory Coast",
+      "est": true
+    },
+    {
+      "id": 96,
+      "km": 11755,
+      "name": "Jamaica",
+      "est": true
+    },
+    {
+      "id": 97,
+      "km": 410,
+      "name": "Japan",
+      "est": true
+    },
+    {
+      "id": 98,
+      "km": 3170,
+      "name": "Jordan",
+      "est": true
+    },
+    {
+      "id": 99,
+      "km": 0,
+      "name": "Kazakhstan",
+      "est": true
+    },
+    {
+      "id": 100,
+      "km": 4910,
+      "name": "Kenya",
+      "est": true
+    },
+    {
+      "id": 101,
+      "km": 6050,
+      "name": "Kiribati",
+      "est": true
+    },
+    {
+      "id": 102,
+      "km": 2530,
+      "name": "Kuwait",
+      "est": true
+    },
+    {
+      "id": 103,
+      "km": 0,
+      "name": "Kyrgyzstan",
+      "est": true
+    },
+    {
+      "id": 104,
+      "km": 0,
+      "name": "Laos",
+      "est": true
+    },
+    {
+      "id": 105,
+      "km": 3755,
+      "name": "Latvia",
+      "est": true
+    },
+    {
+      "id": 106,
+      "km": 3325,
+      "name": "Lebanon",
+      "est": true
+    },
+    {
+      "id": 107,
+      "km": 8520,
+      "name": "Lesotho",
+      "est": true
+    },
+    {
+      "id": 108,
+      "km": 8805,
+      "name": "Liberia",
+      "est": true
+    },
+    {
+      "id": 109,
+      "km": 4420,
+      "name": "Libya",
+      "est": true
+    },
+    {
+      "id": 110,
+      "km": 5105,
+      "name": "Liechtenstein",
+      "est": true
+    },
+    {
+      "id": 111,
+      "km": 3830,
+      "name": "Lithuania",
+      "est": true
+    },
+    {
+      "id": 112,
+      "km": 0,
+      "name": "Macau",
+      "est": true
+    },
+    {
+      "id": 113,
+      "km": 5765,
+      "name": "Madagascar",
+      "est": true
+    },
+    {
+      "id": 114,
+      "km": 6580,
+      "name": "Malawi",
+      "est": true
+    },
+    {
+      "id": 115,
+      "km": 1455,
+      "name": "Malaysia",
+      "est": true
+    },
+    {
+      "id": 116,
+      "km": 2945,
+      "name": "Maldives",
+      "est": true
+    },
+    {
+      "id": 117,
+      "km": 6935,
+      "name": "Mali",
+      "est": true
+    },
+    {
+      "id": 118,
+      "km": 5130,
+      "name": "Malta",
+      "est": true
+    },
+    {
+      "id": 119,
+      "km": 4940,
+      "name": "Marshall Islands",
+      "est": true
+    },
+    {
+      "id": 120,
+      "km": 7335,
+      "name": "Mauritania",
+      "est": true
+    },
+    {
+      "id": 121,
+      "km": 6110,
+      "name": "Mauritius",
+      "est": true
+    },
+    {
+      "id": 122,
+      "km": 8565,
+      "name": "Mexico",
+      "est": true
+    },
+    {
+      "id": 123,
+      "km": 2620,
+      "name": "Micronesia",
+      "est": true
+    },
+    {
+      "id": 124,
+      "km": 3580,
+      "name": "Moldova",
+      "est": true
+    },
+    {
+      "id": 125,
+      "km": 5380,
+      "name": "Monaco",
+      "est": true
+    },
+    {
+      "id": 126,
+      "km": 0,
+      "name": "Mongolia",
+      "est": true
+    },
+    {
+      "id": 127,
+      "km": 4405,
+      "name": "Montenegro",
+      "est": true
+    },
+    {
+      "id": 128,
+      "km": 6515,
+      "name": "Morocco",
+      "est": true
+    },
+    {
+      "id": 129,
+      "km": 6190,
+      "name": "Mozambique",
+      "est": true
+    },
+    {
+      "id": 130,
+      "km": 0,
+      "name": "Myanmar",
+      "est": true
+    },
+    {
+      "id": 131,
+      "km": 7905,
+      "name": "Namibia",
+      "est": true
+    },
+    {
+      "id": 132,
+      "km": 5790,
+      "name": "Nauru",
+      "est": true
+    },
+    {
+      "id": 133,
+      "km": 0,
+      "name": "Nepal",
+      "est": true
+    },
+    {
+      "id": 134,
+      "km": 5110,
+      "name": "Netherlands",
+      "est": true
+    },
+    {
+      "id": 135,
+      "km": 6595,
+      "name": "New Caledonia",
+      "est": true
+    },
+    {
+      "id": 136,
+      "km": 8070,
+      "name": "New Zealand",
+      "est": true
+    },
+    {
+      "id": 137,
+      "km": 11940,
+      "name": "Nicaragua",
+      "est": true
+    },
+    {
+      "id": 138,
+      "km": 6485,
+      "name": "Nigeria",
+      "est": true
+    },
+    {
+      "id": 139,
+      "km": 0,
+      "name": "North Korea",
+      "est": true
+    },
+    {
+      "id": 140,
+      "km": 4225,
+      "name": "North Macedonia",
+      "est": true
+    },
+    {
+      "id": 141,
+      "km": 3705,
+      "name": "Norway",
+      "est": true
+    },
+    {
+      "id": 142,
+      "km": 2075,
+      "name": "Oman",
+      "est": true
+    },
+    {
+      "id": 143,
+      "km": 0,
+      "name": "Pakistan",
+      "est": true
+    },
+    {
+      "id": 144,
+      "km": 2525,
+      "name": "Palau",
+      "est": true
+    },
+    {
+      "id": 145,
+      "km": 3490,
+      "name": "Palestine",
+      "est": true
+    },
+    {
+      "id": 146,
+      "km": 12560,
+      "name": "Panama",
+      "est": true
+    },
+    {
+      "id": 147,
+      "km": 3870,
+      "name": "Papua New Guinea",
+      "est": true
+    },
+    {
+      "id": 148,
+      "km": 14890,
+      "name": "Paraguay",
+      "est": true
+    },
+    {
+      "id": 149,
+      "km": 13825,
+      "name": "Peru",
+      "est": true
+    },
+    {
+      "id": 150,
+      "km": 535,
+      "name": "Philippines",
+      "est": true
+    },
+    {
+      "id": 151,
+      "km": 3995,
+      "name": "Poland",
+      "est": true
+    },
+    {
+      "id": 152,
+      "km": 6500,
+      "name": "Portugal",
+      "est": true
+    },
+    {
+      "id": 153,
+      "km": 11950,
+      "name": "Puerto Rico",
+      "est": true
+    },
+    {
+      "id": 154,
+      "km": 2490,
+      "name": "Qatar",
+      "est": true
+    },
+    {
+      "id": 155,
+      "km": 6795,
+      "name": "Republic of the Congo",
+      "est": true
+    },
+    {
+      "id": 156,
+      "km": 3625,
+      "name": "Romania",
+      "est": true
+    },
+    {
+      "id": 157,
+      "km": 0,
+      "name": "Russia",
+      "est": true
+    },
+    {
+      "id": 158,
+      "km": 6200,
+      "name": "Rwanda",
+      "est": true
+    },
+    {
+      "id": 159,
+      "km": 12050,
+      "name": "Saint Kitts and Nevis",
+      "est": true
+    },
+    {
+      "id": 160,
+      "km": 8455,
+      "name": "Samoa",
+      "est": true
+    },
+    {
+      "id": 161,
+      "km": 4985,
+      "name": "San Marino",
+      "est": true
+    },
+    {
+      "id": 162,
+      "km": 7860,
+      "name": "Sao Tome and Principe",
+      "est": true
+    },
+    {
+      "id": 163,
+      "km": 2440,
+      "name": "Saudi Arabia",
+      "est": true
+    },
+    {
+      "id": 164,
+      "km": 4180,
+      "name": "Serbia",
+      "est": true
+    },
+    {
+      "id": 165,
+      "km": 4695,
+      "name": "Seychelles",
+      "est": true
+    },
+    {
+      "id": 166,
+      "km": 8875,
+      "name": "Sierra Leone",
+      "est": true
+    },
+    {
+      "id": 167,
+      "km": 1970,
+      "name": "Singapore",
+      "est": true
+    },
+    {
+      "id": 168,
+      "km": 4120,
+      "name": "Slovakia",
+      "est": true
+    },
+    {
+      "id": 169,
+      "km": 4610,
+      "name": "Slovenia",
+      "est": true
+    },
+    {
+      "id": 170,
+      "km": 3560,
+      "name": "Somalia",
+      "est": true
+    },
+    {
+      "id": 171,
+      "km": 7835,
+      "name": "South Africa",
+      "est": true
+    },
+    {
+      "id": 172,
+      "km": 300,
+      "name": "South Korea",
+      "est": true
+    },
+    {
+      "id": 173,
+      "km": 4945,
+      "name": "South Sudan",
+      "est": true
+    },
+    {
+      "id": 174,
+      "km": 5750,
+      "name": "Spain",
+      "est": true
+    },
+    {
+      "id": 175,
+      "km": 2105,
+      "name": "Sri Lanka",
+      "est": true
+    },
+    {
+      "id": 176,
+      "km": 3965,
+      "name": "Sudan",
+      "est": true
+    },
+    {
+      "id": 177,
+      "km": 12675,
+      "name": "Suriname",
+      "est": true
+    },
+    {
+      "id": 178,
+      "km": 3965,
+      "name": "Sweden",
+      "est": true
+    },
+    {
+      "id": 179,
+      "km": 5045,
+      "name": "Switzerland",
+      "est": true
+    },
+    {
+      "id": 180,
+      "km": 2730,
+      "name": "Syria",
+      "est": true
+    },
+    {
+      "id": 181,
+      "km": 10,
+      "name": "Taiwan",
+      "est": true
+    },
+    {
+      "id": 182,
+      "km": 0,
+      "name": "Tajikistan",
+      "est": true
+    },
+    {
+      "id": 183,
+      "km": 5770,
+      "name": "Tanzania",
+      "est": true
+    },
+    {
+      "id": 184,
+      "km": 120,
+      "name": "Thailand",
+      "est": true
+    },
+    {
+      "id": 185,
+      "km": 3420,
+      "name": "Timor-Leste",
+      "est": true
+    },
+    {
+      "id": 186,
+      "km": 7760,
+      "name": "Togo",
+      "est": true
+    },
+    {
+      "id": 187,
+      "km": 8670,
+      "name": "Tonga",
+      "est": true
+    },
+    {
+      "id": 188,
+      "km": 12590,
+      "name": "Trinidad and Tobago",
+      "est": true
+    },
+    {
+      "id": 189,
+      "km": 5365,
+      "name": "Tunisia",
+      "est": true
+    },
+    {
+      "id": 190,
+      "km": 2465,
+      "name": "Turkey",
+      "est": true
+    },
+    {
+      "id": 191,
+      "km": 625,
+      "name": "Turkmenistan",
+      "est": true
+    },
+    {
+      "id": 192,
+      "km": 6955,
+      "name": "Tuvalu",
+      "est": true
+    },
+    {
+      "id": 193,
+      "km": 5505,
+      "name": "Uganda",
+      "est": true
+    },
+    {
+      "id": 194,
+      "km": 2840,
+      "name": "Ukraine",
+      "est": true
+    },
+    {
+      "id": 195,
+      "km": 2115,
+      "name": "United Arab Emirates",
+      "est": true
+    },
+    {
+      "id": 196,
+      "km": 5285,
+      "name": "United Kingdom",
+      "est": true
+    },
+    {
+      "id": 197,
+      "km": 2690,
+      "name": "United States",
+      "est": true
+    },
+    {
+      "id": 198,
+      "km": 15255,
+      "name": "Uruguay",
+      "est": true
+    },
+    {
+      "id": 199,
+      "km": 110,
+      "name": "Uzbekistan",
+      "est": true
+    },
+    {
+      "id": 200,
+      "km": 5060,
+      "name": "Vatican City",
+      "est": true
+    },
+    {
+      "id": 201,
+      "km": 12605,
+      "name": "Venezuela",
+      "est": true
+    },
+    {
+      "id": 202,
+      "km": 0,
+      "name": "Vietnam",
+      "est": true
+    },
+    {
+      "id": 203,
+      "km": 7490,
+      "name": "Western Sahara",
+      "est": true
+    },
+    {
+      "id": 204,
+      "km": 2970,
+      "name": "Yemen",
+      "est": true
+    },
+    {
+      "id": 205,
+      "km": 6660,
+      "name": "Zambia",
+      "est": true
+    },
+    {
+      "id": 206,
+      "km": 7245,
+      "name": "Zimbabwe",
+      "est": true
     }
   ]
 }

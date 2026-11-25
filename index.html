@@ -134,6 +134,9 @@
   .kbd .row button.wide { flex: 1 1 auto; }
   .kbd .row button.space { flex: 3 1 auto; }
   [hidden] { display: none !important; }
+  .big.approx { background: rgba(143, 211, 255, .08); color: #bfe3ff; border-color: rgba(143, 211, 255, .3); font-size: 1.05rem; }
+  .big.approx::before { content: "≈ "; }
+  .big small { color: var(--muted); font-weight: 400; font-size: .85rem; margin-left: 4px; }
 </style>
 
 </head>
@@ -143,7 +146,7 @@
   <header class="hero">
     <div id="globeWrap"><canvas id="globe" aria-label="Drehender Globus"></canvas></div>
     <h1>Länder-Kilometer</h1>
-    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v4</span></p>
+    <p class="sub">Distanz vom Startland → Zielland · <span style="opacity:.6">v5</span></p>
     <span id="status">Lade …</span>
   </header>
 
@@ -175,14 +178,15 @@
         <b>＋ Speichern:</b> Kilometer auf dem Zahlenfeld tippen → <b>Weiter</b> (oder Leertaste/Enter) → Land auf der Tastatur tippen → Vorschlag antippen oder <b>↵</b> (nimmt den markierten Vorschlag).<br>
         <b>− Suchen:</b> Kilometer tippen – Treffer erscheinen sofort. <b>↵</b> leert das Feld für die nächste Zahl.<br>
         <b>⌨ Befehl:</b> Freie Eingabe für alle Befehle unten.<br>
-        Der gewählte Modus bleibt, bis du ihn änderst.
+        Der gewählte Modus bleibt, bis du ihn änderst.<br>
+        <b>≈ berechnet:</b> Diese Werte sind aus der Weltkarte berechnet (meist ±10 km genau). Sobald du ein Land selbst mit ＋ speicherst, gilt dein exakter Wert.
       </p>
       <table>
         <tr><th>Befehl</th><th>Was passiert</th></tr>
         <tr><td><code>+1234 Frankreich</code><br><code>+1234,Frankreich</code></td>
             <td>Speichert das Land mit 1234 km. Gibt es das Land schon, wird nur die Kilometerzahl aktualisiert (Groß-/Kleinschreibung egal).</td></tr>
         <tr><td><code>-1234</code></td>
-            <td>Zeigt alle Länder mit genau 1234 km.</td></tr>
+            <td>Zeigt alle Länder mit genau 1234 km – plus berechnete Länder (≈) im Umkreis von ±15 km.</td></tr>
         <tr><td><code>~1234</code><br><code>~1234 50</code></td>
             <td>Zeigt alle Länder im Bereich 1234 ± 20 km (oder ± der zweiten Zahl, hier 50), nach Abstand sortiert.</td></tr>
         <tr><td><code>?Frankreich</code><br><code>?fra</code></td>
@@ -272,7 +276,7 @@
     const maxKm = Math.max(1, ...rows.map((e) => e.km));
     $("list").innerHTML = rows.length
       ? "<table><tr><th class='num'>ID</th><th class='num'>km</th><th>Land</th></tr>" +
-        rows.map((e) => `<tr><td class="num muted">${e.id}</td><td class="num">${e.km}</td><td>${esc(e.name)}<span class="kmbar" style="width:${Math.max(4, Math.round(100 * e.km / maxKm))}%"></span></td></tr>`).join("") +
+        rows.map((e) => `<tr><td class="num muted">${e.id}</td><td class="num">${e.est ? '<span class="muted" title="berechnet">≈</span>' : ""}${e.km}</td><td>${esc(e.name)}<span class="kmbar" style="width:${Math.max(4, Math.round(100 * e.km / maxKm))}%"></span></td></tr>`).join("") +
         "</table>"
       : "<p class='muted'>Noch keine Einträge.</p>";
   }
@@ -365,6 +369,18 @@
 
   // --- Befehle ---
   const fmt = (list) => list.map((e) => `<span class="big">${esc(e.name)}</span>`).join("<br>");
+  // Treffer für eine km-Zahl: exakte + berechnete (≈) Einträge in der Nähe
+  const TOL = 15;
+  function lookup(km) {
+    const exact = data.entries.filter((e) => e.km === km);
+    const approx = data.entries.filter((e) => e.est && e.km !== km && Math.abs(e.km - km) <= TOL)
+      .sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
+    return { exact, approx, all: [...exact, ...approx] };
+  }
+  const fmtLookup = (r, km) =>
+    r.exact.map((e) => `<span class="big${e.est ? " approx" : ""}">${esc(e.name)}</span>`).join("<br>") +
+    (r.exact.length && r.approx.length ? "<br>" : "") +
+    r.approx.map((e) => `<span class="big approx">${esc(e.name)} <small>${e.km}</small></span>`).join("<br>");
 
   async function run(raw) {
     const input = raw.replace(/[‎‏‪-‮⁦-⁩]/g, "").trim();
@@ -376,7 +392,7 @@
       const km = parseInt(m[1], 10), name = m[2].trim();
       const res = await mutate(() => {
         const ex = data.entries.find((e) => norm(e.name) === norm(name));
-        if (ex) { const old = ex.km; ex.km = km; return { upd: true, old, e: ex }; }
+        if (ex) { const old = ex.km; ex.km = km; delete ex.est; return { upd: true, old, e: ex }; }
         const id = data.entries.reduce((mx, e) => Math.max(mx, e.id), 0) + 1;
         const e = { id, km, name };
         data.entries.push(e); return { upd: false, e };
@@ -390,8 +406,8 @@
     // -1234
     if ((m = input.match(/^-\s*(\d+)$/))) {
       const km = parseInt(m[1], 10);
-      const hits = data.entries.filter((e) => e.km === km);
-      if (hits.length) { window.globeFocus?.(hits.map((e) => e.name)); return show(fmt(hits)); }
+      const r = lookup(km);
+      if (r.all.length) { window.globeFocus?.(r.all.map((e) => e.name)); return show(fmtLookup(r, km)); }
       const near = data.entries.filter((e) => Math.abs(e.km - km) <= 20).sort((a, b) => Math.abs(a.km - km) - Math.abs(b.km - km));
       return show(`Kein Land mit ${km} km.` + (near.length ? `<br><span class="muted">In der Nähe: ${near.map((e) => `${esc(e.name)} (${e.km})`).join(", ")}</span>` : ""), "err");
     }
@@ -542,7 +558,8 @@
     const km = parseInt(pad.km, 10);
     const hits = data.entries.filter((e) => e.km === km);
     if (pad.mode === "minus") {
-      if (hits.length) { window.globeFocus?.(hits.map((e) => e.name)); show(fmt(hits)); }
+      const r = lookup(km);
+      if (r.all.length) { window.globeFocus?.(r.all.map((e) => e.name)); show(fmtLookup(r, km)); }
       else show(`<span class="muted">Kein Land mit ${km} km.</span>`);
     } else {
       show(hits.length ? `<span class="muted">Schon bei ${km} km: ${hits.map((e) => esc(e.name)).join(", ")}</span>` : "");
